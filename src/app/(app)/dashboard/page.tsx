@@ -32,26 +32,26 @@ export default async function DashboardPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="text-sm text-zinc-400">{greeting}</p>
-          <h1 className="text-2xl font-bold text-white">
+          <p className="text-sm text-muted">{greeting}</p>
+          <h1 className="text-2xl font-bold text-fg">
             {profile.display_name ?? "학습자"}님, 오늘도 한 걸음 🌱
           </h1>
         </div>
         <Link
           href="/settings"
-          className="inline-flex items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900 px-3.5 py-1.5 text-sm font-medium text-zinc-300 transition hover:bg-zinc-800"
+          className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3.5 py-1.5 text-sm font-medium text-muted transition hover:bg-muted-bg"
         >
           {pairLabel}
-          <span className="text-zinc-500">변경</span>
+          <span className="text-subtle">변경</span>
         </Link>
       </div>
 
       {/* Stat tiles */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatTile icon="🔥" label="연속 학습" value={`${stats.currentStreak}일`} accent="text-brand" />
-        <StatTile icon="📌" label="오늘 복습" value={`${reviewCount}개`} accent="text-brand-light" />
-        <StatTile icon="🧠" label="학습한 카드" value={`${due.totalLearned}개`} accent="text-white" />
-        <StatTile icon="🗓️" label="총 학습일" value={`${stats.totalDays}일`} accent="text-zinc-300" />
+        <StatTile icon="📌" label="오늘 복습" value={`${reviewCount}개`} accent="text-brand" />
+        <StatTile icon="🧠" label="학습한 카드" value={`${due.totalLearned}개`} accent="text-fg" />
+        <StatTile icon="🗓️" label="총 학습일" value={`${stats.totalDays}일`} accent="text-muted" />
       </div>
 
       {/* Main actions */}
@@ -79,16 +79,16 @@ export default async function DashboardPage() {
 
         <Link
           href="/sentences"
-          className="group rounded-2xl border border-zinc-800 bg-zinc-900 p-6 transition hover:border-zinc-700"
+          className="group rounded-2xl border border-line bg-surface p-6 transition hover:border-brand/40"
         >
           <div className="flex items-center justify-between">
             <span className="text-3xl">💬</span>
-            <span className="rounded-full bg-zinc-800 px-3 py-1 text-sm font-semibold text-zinc-300">
+            <span className="rounded-full bg-muted-bg px-3 py-1 text-sm font-semibold text-muted">
               {sentences.length}문장
             </span>
           </div>
-          <h2 className="mt-4 text-lg font-bold text-white">매일 문장·회화</h2>
-          <p className="mt-1 text-sm text-zinc-400">
+          <h2 className="mt-4 text-lg font-bold text-fg">매일 문장·회화</h2>
+          <p className="mt-1 text-sm text-muted">
             실제로 쓰는 표현을 읽고 뜻을 확인하며 자연스러운 문장을 익혀요.
           </p>
           <span className="mt-4 inline-block text-sm font-semibold text-brand underline-offset-4 group-hover:underline">
@@ -98,7 +98,7 @@ export default async function DashboardPage() {
       </div>
 
       {reviewCount === 0 && due.totalLearned === 0 && (
-        <div className="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-5 text-sm text-amber-300">
+        <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-5 text-sm text-amber-700 dark:text-amber-300">
           선택한 언어({pairLabel})에 학습할 콘텐츠가 아직 없어요.{" "}
           <Link href="/settings" className="font-semibold underline">
             설정
@@ -122,10 +122,10 @@ function StatTile({
   accent: string;
 }) {
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-4">
+    <div className="rounded-2xl border border-line bg-surface p-4">
       <div className="text-xl">{icon}</div>
       <div className={`mt-2 text-2xl font-bold ${accent}`}>{value}</div>
-      <div className="text-xs text-zinc-500">{label}</div>
+      <div className="text-xs text-subtle">{label}</div>
     </div>
   );
 }

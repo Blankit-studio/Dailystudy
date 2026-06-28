@@ -1,15 +1,46 @@
 @import "tailwindcss";
 
-/* Brand palette — black / white / blue (Blankit Studio) */
+/* Enable class-based dark mode (toggled via `.dark` on <html>) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Brand palette + semantic tokens (black / white / blue) */
 @theme {
   --color-brand: #1d8fff;
   --color-brand-dark: #0b6fd8;
   --color-brand-light: #5aacff;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-muted-bg: var(--muted-bg);
+  --color-input: var(--input);
+  --color-line: var(--line);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
 }
 
+/* Light theme (default) */
 :root {
-  --background: #000000;
-  --foreground: #ffffff;
+  --bg: #f7f8fa;
+  --surface: #ffffff;
+  --muted-bg: #f1f5f9;
+  --input: #f1f5f9;
+  --line: #e2e8f0;
+  --fg: #0f172a;
+  --muted: #475569;
+  --subtle: #94a3b8;
+}
+
+/* Dark theme */
+.dark {
+  --bg: #000000;
+  --surface: #161618;
+  --muted-bg: #27272a;
+  --input: #0a0a0b;
+  --line: #272729;
+  --fg: #ffffff;
+  --muted: #a1a1aa;
+  --subtle: #71717a;
 }
 
 html {
@@ -17,8 +48,8 @@ html {
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: var(--bg);
+  color: var(--fg);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }

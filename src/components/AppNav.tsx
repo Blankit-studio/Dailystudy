@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "@/components/Logo";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const LINKS = [
   { href: "/dashboard", label: "대시보드", icon: "🏠" },
@@ -16,7 +17,7 @@ export default function AppNav({ displayName }: { displayName: string }) {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-20 border-b border-zinc-800 bg-black/80 backdrop-blur">
+    <header className="sticky top-0 z-20 border-b border-line bg-bg/80 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
         <Link href="/dashboard" aria-label="Daily Study 대시보드">
           <Logo
@@ -37,7 +38,7 @@ export default function AppNav({ displayName }: { displayName: string }) {
                 className={`flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-sm font-medium transition sm:px-3 ${
                   active
                     ? "bg-brand/15 text-brand"
-                    : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
+                    : "text-muted hover:bg-muted-bg hover:text-fg"
                 }`}
               >
                 <span className="text-base">{link.icon}</span>
@@ -47,14 +48,15 @@ export default function AppNav({ displayName }: { displayName: string }) {
           })}
         </nav>
 
-        <div className="flex items-center gap-3">
-          <span className="hidden text-sm text-zinc-400 md:inline">
+        <div className="flex items-center gap-2">
+          <span className="hidden text-sm text-muted md:inline">
             {displayName}님
           </span>
+          <ThemeToggle />
           <form action="/auth/signout" method="post">
             <button
               type="submit"
-              className="rounded-lg border border-zinc-700 px-3 py-1.5 text-sm font-medium text-zinc-300 transition hover:bg-zinc-800 hover:text-white"
+              className="rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-muted transition hover:bg-muted-bg hover:text-fg"
             >
               로그아웃
             </button>

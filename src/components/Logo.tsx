@@ -45,7 +45,7 @@ export default function Logo({
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-2 font-bold tracking-tight text-white ${className}`}
+      className={`inline-flex items-center gap-2 font-bold tracking-tight text-fg ${className}`}
     >
       <LogoMark className={`${markClassName} shrink-0`} />
       <span className={`${responsiveWordmark ? "hidden sm:inline" : ""} ${textClassName}`}>

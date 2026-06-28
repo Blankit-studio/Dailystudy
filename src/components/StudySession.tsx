@@ -16,25 +16,25 @@ const RATINGS: {
     value: "again",
     label: "다시",
     hint: "몰랐어요",
-    className: "bg-white/10 hover:bg-white/20",
+    className: "bg-zinc-500 hover:bg-zinc-600",
   },
   {
     value: "hard",
     label: "어려움",
     hint: "겨우 기억",
-    className: "bg-brand/30 hover:bg-brand/40",
+    className: "bg-sky-500 hover:bg-sky-600",
   },
   {
     value: "good",
     label: "알맞음",
     hint: "기억했어요",
-    className: "bg-brand/70 hover:bg-brand/80",
+    className: "bg-brand hover:bg-brand-dark",
   },
   {
     value: "easy",
     label: "쉬움",
     hint: "완벽해요",
-    className: "bg-brand hover:bg-brand-dark",
+    className: "bg-blue-600 hover:bg-blue-700",
   },
 ];
 
@@ -91,20 +91,20 @@ export default function StudySession({
 
   if (done) {
     return (
-      <div className="mx-auto max-w-lg rounded-2xl border border-zinc-800 bg-zinc-900 p-10 text-center animate-pop">
+      <div className="mx-auto max-w-lg rounded-2xl border border-line bg-surface p-10 text-center animate-pop">
         <div className="text-5xl">✅</div>
-        <h1 className="mt-4 text-2xl font-bold text-white">학습 완료!</h1>
-        <p className="mt-2 text-sm text-zinc-400">
+        <h1 className="mt-4 text-2xl font-bold text-fg">학습 완료!</h1>
+        <p className="mt-2 text-sm text-muted">
           이번 세션에서 {reviewed}번 복습했어요. 꾸준함이 실력이 됩니다 💪
         </p>
         <div className="mt-6 grid grid-cols-2 gap-3 text-left">
-          <div className="rounded-xl bg-zinc-800 p-4">
+          <div className="rounded-xl bg-muted-bg p-4">
             <div className="text-2xl font-bold text-brand">{total}</div>
-            <div className="text-xs text-zinc-400">학습한 카드</div>
+            <div className="text-xs text-muted">학습한 카드</div>
           </div>
-          <div className="rounded-xl bg-zinc-800 p-4">
-            <div className="text-2xl font-bold text-brand-light">{again}</div>
-            <div className="text-xs text-zinc-400">다시 본 횟수</div>
+          <div className="rounded-xl bg-muted-bg p-4">
+            <div className="text-2xl font-bold text-brand">{again}</div>
+            <div className="text-xs text-muted">다시 본 횟수</div>
           </div>
         </div>
         <div className="mt-6 flex justify-center gap-3">
@@ -117,7 +117,7 @@ export default function StudySession({
           </Link>
           <Link
             href="/sentences"
-            className="rounded-lg border border-zinc-700 px-5 py-2.5 text-sm font-semibold text-zinc-200 transition hover:bg-zinc-800"
+            className="rounded-lg border border-line px-5 py-2.5 text-sm font-semibold text-fg transition hover:bg-muted-bg"
           >
             문장 학습하기
           </Link>
@@ -134,17 +134,17 @@ export default function StudySession({
       <div className="mb-5 flex items-center gap-3">
         <Link
           href="/dashboard"
-          className="text-sm text-zinc-500 transition hover:text-zinc-300"
+          className="text-sm text-subtle transition hover:text-fg"
         >
           ✕
         </Link>
-        <div className="h-2 flex-1 overflow-hidden rounded-full bg-zinc-800">
+        <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted-bg">
           <div
             className="h-full rounded-full bg-brand transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
-        <span className="text-sm font-medium text-zinc-400">
+        <span className="text-sm font-medium text-muted">
           {Math.min(reviewed + 1, total + again)}/{total + again}
         </span>
       </div>
@@ -159,35 +159,35 @@ export default function StudySession({
         >
           <div className={`flip-inner relative h-full w-full ${flipped ? "is-flipped" : ""}`}>
             {/* front */}
-            <div className="flip-face absolute inset-0 flex flex-col items-center justify-center rounded-3xl border border-zinc-800 bg-zinc-900 p-8">
-              <span className="absolute left-5 top-5 rounded-full bg-zinc-800 px-2.5 py-1 text-xs font-medium text-zinc-400">
+            <div className="flip-face absolute inset-0 flex flex-col items-center justify-center rounded-3xl border border-line bg-surface p-8">
+              <span className="absolute left-5 top-5 rounded-full bg-muted-bg px-2.5 py-1 text-xs font-medium text-muted">
                 {targetLabel}
               </span>
-              <p className="text-center text-4xl font-bold text-white">
+              <p className="text-center text-4xl font-bold text-fg">
                 {current.term}
               </p>
               {current.reading && (
-                <p className="mt-3 text-center text-base text-zinc-500">
+                <p className="mt-3 text-center text-base text-subtle">
                   {current.reading}
                 </p>
               )}
-              <p className="absolute bottom-5 text-xs text-zinc-500">
+              <p className="absolute bottom-5 text-xs text-subtle">
                 탭하여 뜻 보기
               </p>
             </div>
 
             {/* back */}
-            <div className="flip-face flip-back absolute inset-0 flex flex-col items-center justify-center rounded-3xl border border-brand/40 bg-zinc-900 p-8">
+            <div className="flip-face flip-back absolute inset-0 flex flex-col items-center justify-center rounded-3xl border border-brand/40 bg-surface p-8">
               <p className="text-center text-3xl font-bold text-brand">
                 {current.meaning}
               </p>
               {current.example && (
                 <div className="mt-5 max-w-sm text-center">
-                  <p className="text-sm font-medium text-zinc-200">
+                  <p className="text-sm font-medium text-fg">
                     {current.example}
                   </p>
                   {current.example_meaning && (
-                    <p className="mt-1 text-sm text-zinc-400">
+                    <p className="mt-1 text-sm text-muted">
                       {current.example_meaning}
                     </p>
                   )}
@@ -204,7 +204,7 @@ export default function StudySession({
           <button
             type="button"
             onClick={() => setFlipped(true)}
-            className="w-full rounded-xl bg-white py-3.5 text-sm font-semibold text-black transition hover:bg-zinc-200"
+            className="w-full rounded-xl bg-fg py-3.5 text-sm font-semibold text-bg transition hover:opacity-90"
           >
             정답 보기
           </button>

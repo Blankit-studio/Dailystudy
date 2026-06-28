@@ -1,7 +1,7 @@
 import { buildHeatmapWeeks } from "@/lib/stats";
 
 function level(count: number): string {
-  if (count <= 0) return "bg-zinc-800";
+  if (count <= 0) return "bg-muted-bg";
   if (count < 3) return "bg-brand/30";
   if (count < 6) return "bg-brand/55";
   if (count < 12) return "bg-brand/80";
@@ -30,9 +30,9 @@ export default function StreakHeatmap({
           </div>
         ))}
       </div>
-      <div className="mt-3 flex items-center justify-end gap-1.5 text-xs text-zinc-500">
+      <div className="mt-3 flex items-center justify-end gap-1.5 text-xs text-subtle">
         <span>적음</span>
-        <div className="h-3 w-3 rounded-sm bg-zinc-800" />
+        <div className="h-3 w-3 rounded-sm bg-muted-bg" />
         <div className="h-3 w-3 rounded-sm bg-brand/30" />
         <div className="h-3 w-3 rounded-sm bg-brand/55" />
         <div className="h-3 w-3 rounded-sm bg-brand/80" />

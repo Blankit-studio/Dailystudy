@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getUser } from "@/lib/data";
 import Logo from "@/components/Logo";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const FEATURES = [
   {
@@ -34,7 +35,7 @@ export default async function Home() {
   const primaryLabel = user ? "대시보드로 이동" : "무료로 시작하기";
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-black text-white">
+    <div className="relative min-h-screen overflow-hidden bg-bg text-fg">
       {/* ambient brand glow */}
       <div className="pointer-events-none absolute left-1/2 top-[-10%] h-[480px] w-[480px] -translate-x-1/2 rounded-full bg-brand/20 blur-[120px]" />
 
@@ -42,6 +43,7 @@ export default async function Home() {
         <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
           <Logo markClassName="h-7 w-7" textClassName="text-lg" />
           <nav className="flex items-center gap-3 text-sm font-medium">
+            <ThemeToggle />
             {user ? (
               <Link
                 href="/dashboard"
@@ -53,7 +55,7 @@ export default async function Home() {
               <>
                 <Link
                   href="/login"
-                  className="rounded-full px-4 py-2 text-zinc-300 transition hover:text-white"
+                  className="rounded-full px-4 py-2 text-muted transition hover:text-fg"
                 >
                   로그인
                 </Link>
@@ -74,14 +76,14 @@ export default async function Home() {
             <span className="inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand/10 px-4 py-1.5 text-sm font-medium text-brand">
               🔥 매일 5분, 꾸준함의 힘
             </span>
-            <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-6xl">
+            <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-extrabold leading-tight tracking-tight text-fg sm:text-6xl">
               매일 한 걸음씩,
               <br />
               <span className="bg-gradient-to-r from-brand to-brand-light bg-clip-text text-transparent">
                 외국어가 습관이 됩니다
               </span>
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-zinc-400">
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-muted">
               간격 반복 플래시카드와 매일 문장 학습, 그리고 연속 학습 스트릭으로
               지치지 않고 꾸준히 언어를 익히세요. 영어·일본어·중국어 등 여러
               언어를 지원합니다.
@@ -95,7 +97,7 @@ export default async function Home() {
               </Link>
               <a
                 href="#features"
-                className="w-full rounded-full border border-zinc-700 bg-zinc-900 px-8 py-3.5 text-base font-semibold text-zinc-200 transition hover:border-zinc-600 sm:w-auto"
+                className="w-full rounded-full border border-line bg-surface px-8 py-3.5 text-base font-semibold text-fg transition hover:bg-muted-bg sm:w-auto"
               >
                 기능 살펴보기
               </a>
@@ -105,7 +107,7 @@ export default async function Home() {
               {LANGUAGES.map((l) => (
                 <span
                   key={l.name}
-                  className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-300"
+                  className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2 text-sm font-medium text-muted"
                 >
                   <span className="text-lg">{l.flag}</span>
                   {l.name}
@@ -120,15 +122,13 @@ export default async function Home() {
               {FEATURES.map((f) => (
                 <div
                   key={f.title}
-                  className="rounded-2xl border border-zinc-800 bg-zinc-900 p-7 transition hover:border-zinc-700"
+                  className="rounded-2xl border border-line bg-surface p-7 transition hover:border-brand/40"
                 >
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand/10 text-2xl">
                     {f.icon}
                   </div>
-                  <h3 className="mt-5 text-lg font-bold text-white">
-                    {f.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+                  <h3 className="mt-5 text-lg font-bold text-fg">{f.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">
                     {f.desc}
                   </p>
                 </div>
@@ -159,7 +159,7 @@ export default async function Home() {
               </div>
               <Link
                 href={primaryHref}
-                className="mt-10 inline-block rounded-full bg-white px-8 py-3 font-semibold text-brand transition hover:bg-zinc-100"
+                className="mt-10 inline-block rounded-full bg-white px-8 py-3 font-semibold text-brand transition hover:bg-blue-50"
               >
                 {primaryLabel}
               </Link>
@@ -167,7 +167,7 @@ export default async function Home() {
           </section>
         </main>
 
-        <footer className="mx-auto max-w-6xl px-6 py-10 text-center text-sm text-zinc-500">
+        <footer className="mx-auto max-w-6xl px-6 py-10 text-center text-sm text-subtle">
           <p>Daily Study · Next.js + Supabase로 만든 데일리 언어 학습 사이트</p>
         </footer>
       </div>

@@ -28,15 +28,15 @@ export default function SettingsForm({
   }
 
   const sameLang = source === target;
-  const selectClass =
-    "w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3.5 py-2.5 text-sm text-white outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30";
+  const fieldClass =
+    "w-full rounded-lg border border-line bg-input px-3.5 py-2.5 text-sm text-fg placeholder-subtle outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30";
 
   return (
     <form action={onSubmit} className="space-y-6">
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
-        <h2 className="font-bold text-white">프로필</h2>
+      <section className="rounded-2xl border border-line bg-surface p-6">
+        <h2 className="font-bold text-fg">프로필</h2>
         <div className="mt-4">
-          <label className="mb-1 block text-sm font-medium text-zinc-300">
+          <label className="mb-1 block text-sm font-medium text-muted">
             이름
           </label>
           <input
@@ -44,26 +44,26 @@ export default function SettingsForm({
             type="text"
             defaultValue={profile.display_name ?? ""}
             placeholder="홍길동"
-            className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3.5 py-2.5 text-sm text-white placeholder-zinc-500 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30"
+            className={fieldClass}
           />
         </div>
       </section>
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
-        <h2 className="font-bold text-white">학습 언어</h2>
-        <p className="mt-1 text-sm text-zinc-400">
+      <section className="rounded-2xl border border-line bg-surface p-6">
+        <h2 className="font-bold text-fg">학습 언어</h2>
+        <p className="mt-1 text-sm text-muted">
           어떤 언어를 사용해 어떤 언어를 배울지 선택하세요.
         </p>
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-sm font-medium text-zinc-300">
+            <label className="mb-1 block text-sm font-medium text-muted">
               내 언어 (출발어)
             </label>
             <select
               name="source_lang"
               value={source}
               onChange={(e) => setSource(e.target.value)}
-              className={selectClass}
+              className={fieldClass}
             >
               {languages.map((l) => (
                 <option key={l.code} value={l.code}>
@@ -73,14 +73,14 @@ export default function SettingsForm({
             </select>
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-zinc-300">
+            <label className="mb-1 block text-sm font-medium text-muted">
               배울 언어 (목표어)
             </label>
             <select
               name="target_lang"
               value={target}
               onChange={(e) => setTarget(e.target.value)}
-              className={selectClass}
+              className={fieldClass}
             >
               {languages.map((l) => (
                 <option key={l.code} value={l.code}>
@@ -91,11 +91,11 @@ export default function SettingsForm({
           </div>
         </div>
         {sameLang && (
-          <p className="mt-3 rounded-lg border border-amber-500/20 bg-amber-500/10 px-3.5 py-2 text-sm text-amber-300">
+          <p className="mt-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3.5 py-2 text-sm text-amber-700 dark:text-amber-300">
             출발어와 목표어가 같아요. 서로 다른 언어를 선택해주세요.
           </p>
         )}
-        <p className="mt-3 text-xs text-zinc-500">
+        <p className="mt-3 text-xs text-subtle">
           현재 콘텐츠가 준비된 조합: 한국어 → 영어, 한국어 → 일본어
         </p>
       </section>
@@ -109,7 +109,7 @@ export default function SettingsForm({
           {isPending ? "저장 중…" : "저장하기"}
         </button>
         {saved && !isPending && (
-          <span className="text-sm text-brand-light">저장되었습니다 ✓</span>
+          <span className="text-sm text-brand">저장되었습니다 ✓</span>
         )}
       </div>
     </form>

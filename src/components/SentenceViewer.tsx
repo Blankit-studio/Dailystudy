@@ -50,41 +50,39 @@ export default function SentenceViewer({
       <div className="mb-5 flex items-center gap-3">
         <Link
           href="/dashboard"
-          className="text-sm text-zinc-500 transition hover:text-zinc-300"
+          className="text-sm text-subtle transition hover:text-fg"
         >
           ✕
         </Link>
-        <div className="h-2 flex-1 overflow-hidden rounded-full bg-zinc-800">
+        <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted-bg">
           <div
             className="h-full rounded-full bg-brand transition-all duration-300"
             style={{ width: `${((index + 1) / total) * 100}%` }}
           />
         </div>
-        <span className="text-sm font-medium text-zinc-400">
+        <span className="text-sm font-medium text-muted">
           {index + 1}/{total}
         </span>
       </div>
 
-      <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-8">
+      <div className="rounded-3xl border border-line bg-surface p-8">
         <div className="flex items-center justify-between">
-          <span className="rounded-full bg-zinc-800 px-2.5 py-1 text-xs font-medium text-zinc-400">
+          <span className="rounded-full bg-muted-bg px-2.5 py-1 text-xs font-medium text-muted">
             {targetLabel}
           </span>
           {current.day_index != null && (
-            <span className="text-xs text-zinc-500">
-              Day {current.day_index}
-            </span>
+            <span className="text-xs text-subtle">Day {current.day_index}</span>
           )}
         </div>
 
-        <p className="mt-6 text-2xl font-bold leading-snug text-white">
+        <p className="mt-6 text-2xl font-bold leading-snug text-fg">
           {current.text_target}
         </p>
         {current.reading && (
-          <p className="mt-2 text-sm text-zinc-500">{current.reading}</p>
+          <p className="mt-2 text-sm text-subtle">{current.reading}</p>
         )}
 
-        <div className="mt-6 min-h-16 border-t border-dashed border-zinc-800 pt-5">
+        <div className="mt-6 min-h-16 border-t border-dashed border-line pt-5">
           {revealed ? (
             <p className="text-lg font-medium text-brand animate-pop">
               {current.text_source}
@@ -93,7 +91,7 @@ export default function SentenceViewer({
             <button
               type="button"
               onClick={() => setRevealed(true)}
-              className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-black transition hover:bg-zinc-200"
+              className="rounded-lg bg-fg px-4 py-2 text-sm font-semibold text-bg transition hover:opacity-90"
             >
               뜻 보기
             </button>
@@ -106,7 +104,7 @@ export default function SentenceViewer({
           type="button"
           onClick={() => go(index - 1)}
           disabled={index === 0}
-          className="rounded-lg border border-zinc-700 px-5 py-2.5 text-sm font-semibold text-zinc-300 transition hover:bg-zinc-800 disabled:opacity-40"
+          className="rounded-lg border border-line px-5 py-2.5 text-sm font-semibold text-muted transition hover:bg-muted-bg hover:text-fg disabled:opacity-40"
         >
           ← 이전
         </button>
@@ -131,7 +129,7 @@ export default function SentenceViewer({
       </div>
 
       {logged && (
-        <p className="mt-4 text-center text-sm text-brand-light">
+        <p className="mt-4 text-center text-sm text-brand">
           오늘 {seen.size}개의 문장을 학습했어요! 🎉
         </p>
       )}

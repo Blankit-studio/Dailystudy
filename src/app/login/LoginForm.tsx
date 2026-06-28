@@ -6,6 +6,9 @@ import { createClient } from "@/lib/supabase/client";
 
 type Mode = "signin" | "signup" | "magic";
 
+const inputClass =
+  "w-full rounded-lg border border-line bg-input px-3.5 py-2.5 text-sm text-fg placeholder-subtle outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30";
+
 export default function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
@@ -99,18 +102,18 @@ export default function LoginForm() {
   ];
 
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-8 shadow-xl shadow-black/40">
-      <h1 className="text-center text-2xl font-bold text-white">
+    <div className="rounded-2xl border border-line bg-surface p-8 shadow-xl shadow-black/5 dark:shadow-black/40">
+      <h1 className="text-center text-2xl font-bold text-fg">
         {mode === "signup" ? "계정 만들기" : "다시 오신 걸 환영해요"}
       </h1>
-      <p className="mt-1 text-center text-sm text-zinc-400">
+      <p className="mt-1 text-center text-sm text-muted">
         {mode === "signup"
           ? "무료로 가입하고 오늘부터 학습을 시작하세요."
           : "학습을 이어가려면 로그인하세요."}
       </p>
 
       {mode !== "magic" && (
-        <div className="mt-6 grid grid-cols-2 gap-1 rounded-xl bg-zinc-800 p-1">
+        <div className="mt-6 grid grid-cols-2 gap-1 rounded-xl bg-muted-bg p-1">
           {tabs.map((t) => (
             <button
               key={t.key}
@@ -122,8 +125,8 @@ export default function LoginForm() {
               }}
               className={`rounded-lg py-2 text-sm font-semibold transition ${
                 mode === t.key
-                  ? "bg-black text-white shadow-sm"
-                  : "text-zinc-400 hover:text-zinc-200"
+                  ? "bg-surface text-brand shadow-sm"
+                  : "text-muted hover:text-fg"
               }`}
             >
               {t.label}
@@ -143,15 +146,15 @@ export default function LoginForm() {
       </button>
 
       <div className="my-5 flex items-center gap-3">
-        <div className="h-px flex-1 bg-zinc-800" />
-        <span className="text-xs text-zinc-500">또는 이메일로</span>
-        <div className="h-px flex-1 bg-zinc-800" />
+        <div className="h-px flex-1 bg-line" />
+        <span className="text-xs text-subtle">또는 이메일로</span>
+        <div className="h-px flex-1 bg-line" />
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {mode === "signup" && (
           <div>
-            <label className="mb-1 block text-sm font-medium text-zinc-300">
+            <label className="mb-1 block text-sm font-medium text-muted">
               이름 (선택)
             </label>
             <input
@@ -159,13 +162,13 @@ export default function LoginForm() {
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="홍길동"
-              className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3.5 py-2.5 text-sm text-white placeholder-zinc-500 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30"
+              className={inputClass}
             />
           </div>
         )}
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-zinc-300">
+          <label className="mb-1 block text-sm font-medium text-muted">
             이메일
           </label>
           <input
@@ -174,13 +177,13 @@ export default function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
-            className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3.5 py-2.5 text-sm text-white placeholder-zinc-500 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30"
+            className={inputClass}
           />
         </div>
 
         {mode !== "magic" && (
           <div>
-            <label className="mb-1 block text-sm font-medium text-zinc-300">
+            <label className="mb-1 block text-sm font-medium text-muted">
               비밀번호
             </label>
             <input
@@ -190,18 +193,18 @@ export default function LoginForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="6자 이상"
-              className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3.5 py-2.5 text-sm text-white placeholder-zinc-500 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30"
+              className={inputClass}
             />
           </div>
         )}
 
         {error && (
-          <p className="rounded-lg border border-red-500/20 bg-red-500/10 px-3.5 py-2.5 text-sm text-red-400">
+          <p className="rounded-lg border border-red-500/20 bg-red-500/10 px-3.5 py-2.5 text-sm text-red-600 dark:text-red-400">
             {error}
           </p>
         )}
         {notice && (
-          <p className="rounded-lg border border-brand/20 bg-brand/10 px-3.5 py-2.5 text-sm text-brand-light">
+          <p className="rounded-lg border border-brand/20 bg-brand/10 px-3.5 py-2.5 text-sm text-brand">
             {notice}
           </p>
         )}
@@ -226,7 +229,7 @@ export default function LoginForm() {
           <button
             type="button"
             onClick={() => setMode("signin")}
-            className="text-brand transition hover:text-brand-light"
+            className="text-brand transition hover:text-brand-dark"
           >
             비밀번호로 로그인하기
           </button>
@@ -238,7 +241,7 @@ export default function LoginForm() {
               setError(null);
               setNotice(null);
             }}
-            className="text-brand transition hover:text-brand-light"
+            className="text-brand transition hover:text-brand-dark"
           >
             비밀번호 없이 이메일 링크로 로그인
           </button>

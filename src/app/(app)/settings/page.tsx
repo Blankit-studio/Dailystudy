@@ -11,8 +11,8 @@ export default async function SettingsPage() {
   return (
     <div className="mx-auto max-w-xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">설정</h1>
-        <p className="mt-1 text-sm text-zinc-400">
+        <h1 className="text-2xl font-bold text-fg">설정</h1>
+        <p className="mt-1 text-sm text-muted">
           학습 언어와 프로필을 관리하세요.
         </p>
       </div>
