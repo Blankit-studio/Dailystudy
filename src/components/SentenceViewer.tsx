@@ -50,50 +50,50 @@ export default function SentenceViewer({
       <div className="mb-5 flex items-center gap-3">
         <Link
           href="/dashboard"
-          className="text-sm text-slate-400 transition hover:text-slate-600"
+          className="text-sm text-zinc-500 transition hover:text-zinc-300"
         >
           ✕
         </Link>
-        <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-200">
+        <div className="h-2 flex-1 overflow-hidden rounded-full bg-zinc-800">
           <div
-            className="h-full rounded-full bg-indigo-500 transition-all duration-300"
+            className="h-full rounded-full bg-brand transition-all duration-300"
             style={{ width: `${((index + 1) / total) * 100}%` }}
           />
         </div>
-        <span className="text-sm font-medium text-slate-500">
+        <span className="text-sm font-medium text-zinc-400">
           {index + 1}/{total}
         </span>
       </div>
 
-      <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+      <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-8">
         <div className="flex items-center justify-between">
-          <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-500">
+          <span className="rounded-full bg-zinc-800 px-2.5 py-1 text-xs font-medium text-zinc-400">
             {targetLabel}
           </span>
           {current.day_index != null && (
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-zinc-500">
               Day {current.day_index}
             </span>
           )}
         </div>
 
-        <p className="mt-6 text-2xl font-bold leading-snug text-slate-900">
+        <p className="mt-6 text-2xl font-bold leading-snug text-white">
           {current.text_target}
         </p>
         {current.reading && (
-          <p className="mt-2 text-sm text-slate-400">{current.reading}</p>
+          <p className="mt-2 text-sm text-zinc-500">{current.reading}</p>
         )}
 
-        <div className="mt-6 min-h-16 border-t border-dashed border-slate-200 pt-5">
+        <div className="mt-6 min-h-16 border-t border-dashed border-zinc-800 pt-5">
           {revealed ? (
-            <p className="text-lg font-medium text-indigo-700 animate-pop">
+            <p className="text-lg font-medium text-brand animate-pop">
               {current.text_source}
             </p>
           ) : (
             <button
               type="button"
               onClick={() => setRevealed(true)}
-              className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+              className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-black transition hover:bg-zinc-200"
             >
               뜻 보기
             </button>
@@ -106,7 +106,7 @@ export default function SentenceViewer({
           type="button"
           onClick={() => go(index - 1)}
           disabled={index === 0}
-          className="rounded-lg border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 disabled:opacity-40"
+          className="rounded-lg border border-zinc-700 px-5 py-2.5 text-sm font-semibold text-zinc-300 transition hover:bg-zinc-800 disabled:opacity-40"
         >
           ← 이전
         </button>
@@ -115,7 +115,7 @@ export default function SentenceViewer({
           <button
             type="button"
             onClick={finish}
-            className="rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
+            className="rounded-lg bg-brand px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-dark"
           >
             {logged ? "기록됨 ✓" : "오늘 학습 완료"}
           </button>
@@ -123,7 +123,7 @@ export default function SentenceViewer({
           <button
             type="button"
             onClick={() => go(index + 1)}
-            className="rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+            className="rounded-lg bg-brand px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-dark"
           >
             다음 →
           </button>
@@ -131,7 +131,7 @@ export default function SentenceViewer({
       </div>
 
       {logged && (
-        <p className="mt-4 text-center text-sm text-emerald-600">
+        <p className="mt-4 text-center text-sm text-brand-light">
           오늘 {seen.size}개의 문장을 학습했어요! 🎉
         </p>
       )}

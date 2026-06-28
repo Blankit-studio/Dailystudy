@@ -99,18 +99,18 @@ export default function LoginForm() {
   ];
 
   return (
-    <div className="rounded-2xl border border-slate-100 bg-white p-8 shadow-sm">
-      <h1 className="text-center text-2xl font-bold text-slate-900">
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-8 shadow-xl shadow-black/40">
+      <h1 className="text-center text-2xl font-bold text-white">
         {mode === "signup" ? "계정 만들기" : "다시 오신 걸 환영해요"}
       </h1>
-      <p className="mt-1 text-center text-sm text-slate-500">
+      <p className="mt-1 text-center text-sm text-zinc-400">
         {mode === "signup"
           ? "무료로 가입하고 오늘부터 학습을 시작하세요."
           : "학습을 이어가려면 로그인하세요."}
       </p>
 
       {mode !== "magic" && (
-        <div className="mt-6 grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1">
+        <div className="mt-6 grid grid-cols-2 gap-1 rounded-xl bg-zinc-800 p-1">
           {tabs.map((t) => (
             <button
               key={t.key}
@@ -122,8 +122,8 @@ export default function LoginForm() {
               }}
               className={`rounded-lg py-2 text-sm font-semibold transition ${
                 mode === t.key
-                  ? "bg-white text-indigo-700 shadow-sm"
-                  : "text-slate-500 hover:text-slate-700"
+                  ? "bg-black text-white shadow-sm"
+                  : "text-zinc-400 hover:text-zinc-200"
               }`}
             >
               {t.label}
@@ -136,22 +136,22 @@ export default function LoginForm() {
         type="button"
         onClick={handleGoogle}
         disabled={loading}
-        className="mt-6 flex w-full items-center justify-center gap-2.5 rounded-lg border border-slate-200 bg-white py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+        className="mt-6 flex w-full items-center justify-center gap-2.5 rounded-lg border border-zinc-300 bg-white py-2.5 text-sm font-semibold text-zinc-800 transition hover:bg-zinc-100 disabled:opacity-60"
       >
         <GoogleIcon />
         Google로 계속하기
       </button>
 
       <div className="my-5 flex items-center gap-3">
-        <div className="h-px flex-1 bg-slate-200" />
-        <span className="text-xs text-slate-400">또는 이메일로</span>
-        <div className="h-px flex-1 bg-slate-200" />
+        <div className="h-px flex-1 bg-zinc-800" />
+        <span className="text-xs text-zinc-500">또는 이메일로</span>
+        <div className="h-px flex-1 bg-zinc-800" />
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {mode === "signup" && (
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">
+            <label className="mb-1 block text-sm font-medium text-zinc-300">
               이름 (선택)
             </label>
             <input
@@ -159,13 +159,13 @@ export default function LoginForm() {
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="홍길동"
-              className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+              className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3.5 py-2.5 text-sm text-white placeholder-zinc-500 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30"
             />
           </div>
         )}
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">
+          <label className="mb-1 block text-sm font-medium text-zinc-300">
             이메일
           </label>
           <input
@@ -174,13 +174,13 @@ export default function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
-            className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3.5 py-2.5 text-sm text-white placeholder-zinc-500 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30"
           />
         </div>
 
         {mode !== "magic" && (
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">
+            <label className="mb-1 block text-sm font-medium text-zinc-300">
               비밀번호
             </label>
             <input
@@ -190,18 +190,18 @@ export default function LoginForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="6자 이상"
-              className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+              className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3.5 py-2.5 text-sm text-white placeholder-zinc-500 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/30"
             />
           </div>
         )}
 
         {error && (
-          <p className="rounded-lg bg-red-50 px-3.5 py-2.5 text-sm text-red-600">
+          <p className="rounded-lg border border-red-500/20 bg-red-500/10 px-3.5 py-2.5 text-sm text-red-400">
             {error}
           </p>
         )}
         {notice && (
-          <p className="rounded-lg bg-emerald-50 px-3.5 py-2.5 text-sm text-emerald-700">
+          <p className="rounded-lg border border-brand/20 bg-brand/10 px-3.5 py-2.5 text-sm text-brand-light">
             {notice}
           </p>
         )}
@@ -209,7 +209,7 @@ export default function LoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-indigo-600 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
+          className="w-full rounded-lg bg-brand py-2.5 text-sm font-semibold text-white transition hover:bg-brand-dark disabled:opacity-60"
         >
           {loading
             ? "처리 중…"
@@ -226,7 +226,7 @@ export default function LoginForm() {
           <button
             type="button"
             onClick={() => setMode("signin")}
-            className="text-indigo-600 hover:underline"
+            className="text-brand transition hover:text-brand-light"
           >
             비밀번호로 로그인하기
           </button>
@@ -238,7 +238,7 @@ export default function LoginForm() {
               setError(null);
               setNotice(null);
             }}
-            className="text-indigo-600 hover:underline"
+            className="text-brand transition hover:text-brand-light"
           >
             비밀번호 없이 이메일 링크로 로그인
           </button>

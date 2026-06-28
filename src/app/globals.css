@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
+/* Brand palette — black / white / blue (Blankit Studio) */
+@theme {
+  --color-brand: #1d8fff;
+  --color-brand-dark: #0b6fd8;
+  --color-brand-light: #5aacff;
+}
+
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #000000;
+  --foreground: #ffffff;
 }
 
 html {

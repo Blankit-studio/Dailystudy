@@ -1,11 +1,11 @@
 import { buildHeatmapWeeks } from "@/lib/stats";
 
 function level(count: number): string {
-  if (count <= 0) return "bg-slate-100";
-  if (count < 3) return "bg-indigo-200";
-  if (count < 6) return "bg-indigo-300";
-  if (count < 12) return "bg-indigo-500";
-  return "bg-indigo-700";
+  if (count <= 0) return "bg-zinc-800";
+  if (count < 3) return "bg-brand/30";
+  if (count < 6) return "bg-brand/55";
+  if (count < 12) return "bg-brand/80";
+  return "bg-brand";
 }
 
 export default function StreakHeatmap({
@@ -30,13 +30,13 @@ export default function StreakHeatmap({
           </div>
         ))}
       </div>
-      <div className="mt-3 flex items-center justify-end gap-1.5 text-xs text-slate-400">
+      <div className="mt-3 flex items-center justify-end gap-1.5 text-xs text-zinc-500">
         <span>적음</span>
-        <div className="h-3 w-3 rounded-sm bg-slate-100" />
-        <div className="h-3 w-3 rounded-sm bg-indigo-200" />
-        <div className="h-3 w-3 rounded-sm bg-indigo-300" />
-        <div className="h-3 w-3 rounded-sm bg-indigo-500" />
-        <div className="h-3 w-3 rounded-sm bg-indigo-700" />
+        <div className="h-3 w-3 rounded-sm bg-zinc-800" />
+        <div className="h-3 w-3 rounded-sm bg-brand/30" />
+        <div className="h-3 w-3 rounded-sm bg-brand/55" />
+        <div className="h-3 w-3 rounded-sm bg-brand/80" />
+        <div className="h-3 w-3 rounded-sm bg-brand" />
         <span>많음</span>
       </div>
     </div>

@@ -11,7 +11,7 @@ export default async function AppLayout({
   if (!profile) redirect("/login");
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-black">
       <AppNav displayName={profile.display_name ?? "학습자"} />
       <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">{children}</main>
     </div>
