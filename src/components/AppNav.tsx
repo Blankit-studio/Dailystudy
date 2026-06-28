@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Logo from "@/components/Logo";
 
 const LINKS = [
   { href: "/dashboard", label: "대시보드", icon: "🏠" },
@@ -17,14 +18,12 @@ export default function AppNav({ displayName }: { displayName: string }) {
   return (
     <header className="sticky top-0 z-20 border-b border-zinc-800 bg-black/80 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
-        <Link
-          href="/dashboard"
-          className="flex items-center gap-2 text-base font-bold tracking-tight text-white"
-        >
-          <span className="text-xl">🌱</span>
-          <span className="hidden sm:inline">
-            Lingo<span className="text-brand">Daily</span>
-          </span>
+        <Link href="/dashboard" aria-label="Daily Study 대시보드">
+          <Logo
+            responsiveWordmark
+            markClassName="h-6 w-6"
+            textClassName="text-base"
+          />
         </Link>
 
         <nav className="flex items-center gap-1">

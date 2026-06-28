@@ -1,19 +1,14 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import LoginForm from "./LoginForm";
+import Logo from "@/components/Logo";
 
 export default function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col bg-black">
       <header className="mx-auto w-full max-w-6xl px-6 py-5">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-lg font-bold tracking-tight text-white"
-        >
-          <span className="text-2xl">🌱</span>
-          <span>
-            Lingo<span className="text-brand">Daily</span>
-          </span>
+        <Link href="/" aria-label="Daily Study 홈">
+          <Logo markClassName="h-7 w-7" textClassName="text-lg" />
         </Link>
       </header>
 

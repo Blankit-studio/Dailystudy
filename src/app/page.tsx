@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getUser } from "@/lib/data";
+import Logo from "@/components/Logo";
 
 const FEATURES = [
   {
@@ -39,12 +40,7 @@ export default async function Home() {
 
       <div className="relative">
         <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-          <div className="flex items-center gap-2 text-lg font-bold tracking-tight">
-            <span className="text-2xl">🌱</span>
-            <span>
-              Lingo<span className="text-brand">Daily</span>
-            </span>
-          </div>
+          <Logo markClassName="h-7 w-7" textClassName="text-lg" />
           <nav className="flex items-center gap-3 text-sm font-medium">
             {user ? (
               <Link
@@ -172,7 +168,7 @@ export default async function Home() {
         </main>
 
         <footer className="mx-auto max-w-6xl px-6 py-10 text-center text-sm text-zinc-500">
-          <p>Lingo Daily · Next.js + Supabase로 만든 데일리 언어 학습 사이트</p>
+          <p>Daily Study · Next.js + Supabase로 만든 데일리 언어 학습 사이트</p>
         </footer>
       </div>
     </div>

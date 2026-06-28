@@ -1,5 +1,5 @@
 -- ============================================================
---  Lingo Daily — seed content
+--  Daily Study — seed content
 --  Safe to run multiple times (idempotent via ON CONFLICT).
 -- ============================================================
 
