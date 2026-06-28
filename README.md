@@ -14,7 +14,7 @@
 - 💬 **매일 문장·회화** — 실제로 쓰는 표현을 발음 읽기·뜻과 함께 학습합니다.
 - 🔥 **스트릭 & 통계** — 연속 학습일, 최장 스트릭, 13주 학습 히트맵을 제공합니다.
 - 🌍 **다국어 지원** — 출발어/목표어 조합을 자유롭게 선택할 수 있는 범용 구조.
-- 🔐 **Supabase Auth** — 이메일/비밀번호 + 매직 링크 로그인, 진도는 DB에 안전하게 저장(RLS 적용).
+- 🔐 **Supabase Auth** — 이메일/비밀번호 · 매직 링크 · Google 로그인, 진도는 DB에 안전하게 저장(RLS 적용).
 
 ---
 
@@ -80,6 +80,38 @@ Supabase 대시보드 **Authentication → URL Configuration**에 배포 도메�
   - `https://your-app.vercel.app/auth/callback`
   - `https://your-app.vercel.app/auth/confirm`
   - 로컬 개발용 `http://localhost:3000/**` 도 함께 추가
+
+---
+
+## 🔑 Google 로그인 설정 (선택)
+
+로그인 화면의 **"Google로 계속하기"** 버튼을 쓰려면 Google·Supabase 양쪽 설정이 필요합니다.
+(설정 전에는 버튼을 눌러도 동작하지 않습니다.)
+
+### 1. Google Cloud에서 OAuth 자격 증명 만들기
+
+1. [Google Cloud Console](https://console.cloud.google.com/) → 프로젝트 생성/선택
+2. **APIs & Services → OAuth consent screen** 구성 (External, 앱 이름·이메일 입력)
+3. **APIs & Services → Credentials → Create Credentials → OAuth client ID**
+   - Application type: **Web application**
+   - **Authorized redirect URIs**에 Supabase 콜백 주소 추가:
+     ```
+     https://<project-ref>.supabase.co/auth/v1/callback
+     ```
+     (이 주소는 Supabase **Authentication → Sign In / Providers → Google** 화면에도 안내됩니다)
+4. 생성된 **Client ID**와 **Client Secret**을 복사
+
+### 2. Supabase에 Google provider 등록
+
+1. Supabase 대시보드 **Authentication → Sign In / Providers → Google**
+2. **Google enabled** 켜기 → 위에서 복사한 **Client ID / Client Secret** 붙여넣기 → 저장
+
+### 3. 리다이렉트 URL 확인
+
+위 "인증 리다이렉트 URL 등록"의 `…/auth/callback` 주소들이 Supabase에 등록되어 있으면 됩니다.
+앱은 `redirectTo`를 `/auth/callback`으로 지정하고, 해당 라우트가 코드 교환 후 대시보드로 보냅니다.
+
+> 흐름: 버튼 클릭 → Google 동의 화면 → `…supabase.co/auth/v1/callback` → 앱 `/auth/callback?code=…` → 세션 생성 → `/dashboard`
 
 ---
 
