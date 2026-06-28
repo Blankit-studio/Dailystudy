@@ -180,6 +180,8 @@ export async function getSentences(profile: Profile): Promise<Sentence[]> {
     .select("*")
     .eq("source_lang", profile.learning_source_lang)
     .eq("target_lang", profile.learning_target_lang)
+    // Newest daily (AI) sentences first, then the curated set by day order.
+    .order("for_date", { ascending: false, nullsFirst: false })
     .order("day_index", { ascending: true });
   return (data as Sentence[]) ?? [];
 }

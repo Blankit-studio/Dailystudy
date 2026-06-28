@@ -115,6 +115,42 @@ Supabase 대시보드 **Authentication → URL Configuration**에 배포 도메�
 
 ---
 
+## 🔄 매일 AI 콘텐츠 자동 생성
+
+매일 정해진 시간에 **무료 Google Gemini**가 새 단어 카드와 예문을 생성해
+Supabase에 자동으로 추가합니다. 새 카드는 플래시카드의 신규 카드 큐(SRS)로,
+새 문장은 문장 페이지 상단으로 자동 반영됩니다.
+
+### 동작 방식
+- `/api/cron/generate` 라우트가 활성 언어쌍마다 카드 4개 + 문장 3개를 생성합니다.
+- **Vercel Cron**이 매일 06:00(KST, = 21:00 UTC)에 호출합니다 (`vercel.json`).
+- 오늘 이미 생성한 언어쌍은 건너뛰고, 기존 단어/문장과 중복도 피합니다.
+
+### 설정
+1. **무료 Gemini API 키** 발급 (카드 불필요): <https://aistudio.google.com/apikey>
+2. **Supabase service_role 키** 복사: Project Settings → API → `service_role`
+3. **마이그레이션 실행**: SQL Editor에서 `supabase/migrations/0002_daily_content.sql`
+4. 환경 변수 추가 (로컬 `.env.local` **그리고** Vercel 둘 다):
+   - `GEMINI_API_KEY`
+   - `SUPABASE_SERVICE_ROLE_KEY` ← **절대 브라우저에 노출 금지** (서버 전용)
+   - `CRON_SECRET` (임의의 긴 문자열)
+   - (선택) `GEMINI_MODEL` — 기본값 `gemini-2.5-flash`, 더 가벼운 `gemini-2.5-flash-lite`
+
+> Vercel Cron은 **프로덕션 배포**에서만 동작하며, `CRON_SECRET`을 설정하면
+> 호출 시 `Authorization: Bearer <CRON_SECRET>` 헤더를 자동으로 붙여 보냅니다.
+
+### 수동 테스트
+배포 후(또는 로컬 `npm run dev`) 아래로 즉시 생성해볼 수 있어요:
+
+```bash
+curl "https://<앱>.vercel.app/api/cron/generate?secret=<CRON_SECRET>&force=1"
+```
+
+`force=1`은 "오늘 이미 생성됨" 건너뛰기를 무시합니다. 응답 JSON에 언어쌍별 생성
+개수가 표시되고, 키가 틀리면 Gemini 오류 메시지가 그대로 나와 디버깅이 쉽습니다.
+
+---
+
 ## 🗂️ 프로젝트 구조
 
 ```
