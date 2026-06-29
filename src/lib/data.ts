@@ -4,6 +4,7 @@ import { computeCurrentStreak, computeLongestStreak } from "./stats";
 import type {
   Language,
   Profile,
+  Report,
   Sentence,
   StudyCard,
   StudyLog,
@@ -184,6 +185,17 @@ export async function getSentences(profile: Profile): Promise<Sentence[]> {
     .order("for_date", { ascending: false, nullsFirst: false })
     .order("day_index", { ascending: true });
   return (data as Sentence[]) ?? [];
+}
+
+/** Reports visible to the user: their own weekly reports + global reports. */
+export async function getReports(limit = 6): Promise<Report[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("reports")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  return (data as Report[]) ?? [];
 }
 
 export async function getStudyLogs(

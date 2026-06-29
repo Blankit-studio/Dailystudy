@@ -68,6 +68,18 @@ export type StudyLog = {
   sentences_studied: number;
 };
 
+export type Report = {
+  id: string;
+  user_id: string | null;
+  kind: "reset" | "weekly" | string;
+  period_start: string | null;
+  period_end: string | null;
+  title: string;
+  body: string;
+  stats: Record<string, unknown> | null;
+  created_at: string;
+};
+
 export type CardProgress = Pick<
   UserCard,
   "ease" | "interval_days" | "repetitions" | "due_date" | "status"

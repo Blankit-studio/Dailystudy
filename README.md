@@ -161,6 +161,26 @@ curl "https://<앱>.vercel.app/api/admin/reset?secret=<CRON_SECRET>&confirm=1"
 - 기본 생성량: 언어쌍별 **단어 12개 + 문장 8개** (`&cards=`, `&sentences=`로 조정)
 - 연속 학습일(스트릭) 기록까지 지우려면 `&logs=1` 추가
 - `confirm=1`이 없으면 안전을 위해 실행되지 않습니다.
+- 초기화 직전 데이터는 **AI 요약 리포트**로 통계 페이지에 자동 저장됩니다(아래 참고).
+
+## 🧠 AI 리포트 (초기화 요약 · 주간 분석)
+
+학습 통계 페이지(`/stats`)의 **AI 리포트** 섹션에서 확인합니다. (마이그레이션
+`supabase/migrations/0003_reports.sql` 실행 필요)
+
+- **초기화 요약**: 전체 초기화(`/api/admin/reset`) 실행 시, 지워지기 직전의
+  누적 학습 데이터를 AI가 짧게 정리해 전역 리포트로 남깁니다.
+- **주간 분석**: 매주 일요일 **Vercel Cron**(`/api/cron/weekly`, 일 15:00 UTC =
+  월 00:00 KST)이 사용자별 지난 7일 학습을 AI로 분석해 리포트를 생성합니다.
+
+수동으로 주간 리포트를 만들어 보려면:
+
+```bash
+curl "https://<앱>.vercel.app/api/cron/weekly?secret=<CRON_SECRET>&force=1"
+```
+
+> Vercel Hobby 플랜은 Cron 개수에 제한이 있을 수 있습니다. 두 cron(`generate`,
+> `weekly`)이 거부되면 하나로 합치거나 플랜을 올리면 됩니다.
 
 ---
 

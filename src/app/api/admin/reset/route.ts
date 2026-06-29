@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { generateDailyContent, type PairResult } from "@/lib/generateContent";
+import { generateResetReport } from "@/lib/reports";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -74,6 +75,14 @@ export async function GET(request: Request) {
 
   const admin = createAdminClient();
 
+  // 0) Snapshot the pre-reset data into an AI report (before anything is wiped).
+  let report: { ok: boolean; title?: string; error?: string };
+  try {
+    report = await generateResetReport();
+  } catch (e) {
+    report = { ok: false, error: e instanceof Error ? e.message : "report failed" };
+  }
+
   // 1) Wipe content. Deleting cards cascades to user_cards (SRS progress);
   //    deleting decks removes the now-empty decks.
   const { count: deletedCards } = await admin
@@ -118,6 +127,7 @@ export async function GET(request: Request) {
 
   return NextResponse.json({
     ok: true,
+    report,
     reset: {
       deletedCards: deletedCards ?? 0,
       deletedSentences: deletedSentences ?? 0,
