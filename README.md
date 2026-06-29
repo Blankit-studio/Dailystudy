@@ -149,6 +149,19 @@ curl "https://<앱>.vercel.app/api/cron/generate?secret=<CRON_SECRET>&force=1"
 `force=1`은 "오늘 이미 생성됨" 건너뛰기를 무시합니다. 응답 JSON에 언어쌍별 생성
 개수가 표시되고, 키가 틀리면 Gemini 오류 메시지가 그대로 나와 디버깅이 쉽습니다.
 
+### 전체 초기화 (수동, 1회용)
+기존 콘텐츠를 **모두 지우고** 새 분량으로 다시 시작하고 싶을 때 사용합니다.
+모든 단어·문장을 삭제하고(플래시카드 SRS 진행도 함께 초기화) AI로 더 넉넉한
+새 배치를 생성합니다. **되돌릴 수 없으니** 비밀키 + `confirm=1` 이중 확인이 필요합니다.
+
+```bash
+curl "https://<앱>.vercel.app/api/admin/reset?secret=<CRON_SECRET>&confirm=1"
+```
+
+- 기본 생성량: 언어쌍별 **단어 12개 + 문장 8개** (`&cards=`, `&sentences=`로 조정)
+- 연속 학습일(스트릭) 기록까지 지우려면 `&logs=1` 추가
+- `confirm=1`이 없으면 안전을 위해 실행되지 않습니다.
+
 ---
 
 ## 🗂️ 프로젝트 구조

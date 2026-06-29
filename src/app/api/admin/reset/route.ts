@@ -1,0 +1,128 @@
+import { NextResponse } from "next/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { generateDailyContent, type PairResult } from "@/lib/generateContent";
+
+export const dynamic = "force-dynamic";
+export const maxDuration = 60;
+
+const DEFAULT_PAIRS = [
+  { sourceLang: "ko", targetLang: "en" },
+  { sourceLang: "ko", targetLang: "ja" },
+];
+
+function isAuthorized(request: Request): boolean {
+  const secret = process.env.CRON_SECRET;
+  if (!secret) return true;
+  if (request.headers.get("authorization") === `Bearer ${secret}`) return true;
+  return new URL(request.url).searchParams.get("secret") === secret;
+}
+
+async function getActivePairs() {
+  const pairs = new Map<string, { sourceLang: string; targetLang: string }>();
+  for (const p of DEFAULT_PAIRS) {
+    pairs.set(`${p.sourceLang}-${p.targetLang}`, p);
+  }
+  try {
+    const admin = createAdminClient();
+    const { data } = await admin
+      .from("profiles")
+      .select("learning_source_lang, learning_target_lang");
+    for (const row of data ?? []) {
+      const s = row.learning_source_lang as string;
+      const t = row.learning_target_lang as string;
+      if (s && t && s !== t) pairs.set(`${s}-${t}`, { sourceLang: s, targetLang: t });
+    }
+  } catch {
+    // fall back to defaults
+  }
+  return [...pairs.values()];
+}
+
+/**
+ * One-time reset: wipes all learning content (cards/decks → user SRS
+ * progress cascades away) and sentences, then generates a fresh, larger
+ * batch via AI. Destructive — requires the secret AND `confirm=1`.
+ *
+ *   GET /api/admin/reset?secret=<CRON_SECRET>&confirm=1
+ *
+ * Optional: &cards=12 &sentences=8 &logs=1 (also clear streak/stats).
+ */
+export async function GET(request: Request) {
+  if (!isAuthorized(request)) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+
+  const url = new URL(request.url);
+  if (url.searchParams.get("confirm") !== "1") {
+    return NextResponse.json(
+      {
+        error: "destructive operation",
+        message:
+          "모든 단어/문장을 삭제하고 새로 생성합니다. 실행하려면 confirm=1 을 추가하세요.",
+        example: "/api/admin/reset?secret=YOUR_SECRET&confirm=1",
+      },
+      { status: 400 },
+    );
+  }
+
+  const cardCount = Math.min(Number(url.searchParams.get("cards")) || 12, 30);
+  const sentenceCount = Math.min(
+    Number(url.searchParams.get("sentences")) || 8,
+    20,
+  );
+  const clearLogs = url.searchParams.get("logs") === "1";
+
+  const admin = createAdminClient();
+
+  // 1) Wipe content. Deleting cards cascades to user_cards (SRS progress);
+  //    deleting decks removes the now-empty decks.
+  const { count: deletedCards } = await admin
+    .from("cards")
+    .delete({ count: "exact" })
+    .not("id", "is", null);
+  await admin.from("decks").delete().not("id", "is", null);
+  const { count: deletedSentences } = await admin
+    .from("sentences")
+    .delete({ count: "exact" })
+    .not("id", "is", null);
+
+  let clearedLogs = 0;
+  if (clearLogs) {
+    const { count } = await admin
+      .from("study_logs")
+      .delete({ count: "exact" })
+      .not("id", "is", null);
+    clearedLogs = count ?? 0;
+  }
+
+  // 2) Generate a fresh batch for the active/default pairs.
+  const pairs = await getActivePairs();
+  const generated: (PairResult | { pair: string; error: string })[] = [];
+  for (const pair of pairs) {
+    try {
+      generated.push(
+        await generateDailyContent({
+          ...pair,
+          cardCount,
+          sentenceCount,
+          force: true,
+        }),
+      );
+    } catch (e) {
+      generated.push({
+        pair: `${pair.sourceLang}->${pair.targetLang}`,
+        error: e instanceof Error ? e.message : "unknown error",
+      });
+    }
+  }
+
+  return NextResponse.json({
+    ok: true,
+    reset: {
+      deletedCards: deletedCards ?? 0,
+      deletedSentences: deletedSentences ?? 0,
+      clearedStudyLogs: clearedLogs,
+    },
+    generated,
+  });
+}
