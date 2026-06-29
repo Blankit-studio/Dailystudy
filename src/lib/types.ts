@@ -8,12 +8,15 @@ export type Language = {
   flag: string | null;
 };
 
+export type LearningLevel = "beginner" | "intermediate" | "advanced";
+
 export type Profile = {
   id: string;
   display_name: string | null;
   ui_language: string;
   learning_source_lang: string;
   learning_target_lang: string;
+  learning_level: string;
   created_at: string;
 };
 

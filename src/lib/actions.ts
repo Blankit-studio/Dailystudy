@@ -106,6 +106,12 @@ export async function updateSettings(formData: FormData): Promise<void> {
   const displayName = String(formData.get("display_name") ?? "").trim();
   const sourceLang = String(formData.get("source_lang") ?? "ko");
   const targetLang = String(formData.get("target_lang") ?? "en");
+  const levelInput = String(formData.get("learning_level") ?? "beginner");
+  const learningLevel = ["beginner", "intermediate", "advanced"].includes(
+    levelInput,
+  )
+    ? levelInput
+    : "beginner";
 
   await supabase
     .from("profiles")
@@ -113,6 +119,7 @@ export async function updateSettings(formData: FormData): Promise<void> {
       display_name: displayName || null,
       learning_source_lang: sourceLang,
       learning_target_lang: targetLang,
+      learning_level: learningLevel,
     })
     .eq("id", user.id);
 

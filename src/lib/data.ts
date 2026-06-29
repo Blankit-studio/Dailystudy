@@ -75,7 +75,8 @@ export async function getStudyQueue(profile: Profile): Promise<StudyCard[]> {
     .from("decks")
     .select("id")
     .eq("source_lang", profile.learning_source_lang)
-    .eq("target_lang", profile.learning_target_lang);
+    .eq("target_lang", profile.learning_target_lang)
+    .eq("level", profile.learning_level);
 
   const deckIds = (decks ?? []).map((d) => d.id);
   if (deckIds.length === 0) return [];
@@ -141,7 +142,8 @@ export async function getDueSummary(profile: Profile): Promise<{
     .from("decks")
     .select("id")
     .eq("source_lang", profile.learning_source_lang)
-    .eq("target_lang", profile.learning_target_lang);
+    .eq("target_lang", profile.learning_target_lang)
+    .eq("level", profile.learning_level);
 
   const deckIds = (decks ?? []).map((d) => d.id);
   if (deckIds.length === 0) return { due: 0, newCards: 0, totalLearned: 0 };
@@ -183,7 +185,8 @@ export async function pairHasContent(
     .from("decks")
     .select("id")
     .eq("source_lang", profile.learning_source_lang)
-    .eq("target_lang", profile.learning_target_lang);
+    .eq("target_lang", profile.learning_target_lang)
+    .eq("level", profile.learning_level);
   const deckIds = (decks ?? []).map((d) => d.id);
 
   let cards = false;
@@ -199,7 +202,8 @@ export async function pairHasContent(
     .from("sentences")
     .select("id", { count: "exact", head: true })
     .eq("source_lang", profile.learning_source_lang)
-    .eq("target_lang", profile.learning_target_lang);
+    .eq("target_lang", profile.learning_target_lang)
+    .eq("level", profile.learning_level);
 
   return { cards, sentences: (sentenceCount ?? 0) > 0 };
 }
@@ -211,6 +215,7 @@ export async function getSentences(profile: Profile): Promise<Sentence[]> {
     .select("*")
     .eq("source_lang", profile.learning_source_lang)
     .eq("target_lang", profile.learning_target_lang)
+    .eq("level", profile.learning_level)
     // Newest daily (AI) sentences first, then the curated set by day order.
     .order("for_date", { ascending: false, nullsFirst: false })
     .order("day_index", { ascending: true });

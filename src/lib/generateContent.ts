@@ -25,6 +25,18 @@ export type PairResult = {
 
 const DAILY_DECK_TITLE = "매일 새 단어";
 
+const LEVEL_KO: Record<string, string> = {
+  beginner: "초급",
+  intermediate: "중급",
+  advanced: "고급",
+};
+const LEVEL_DESC: Record<string, string> = {
+  beginner: "아주 기초적이고 자주 쓰는 쉬운 단어와 짧은 문장",
+  intermediate: "일상 회화 수준의 어휘와 조금 더 긴 문장",
+  advanced: "관용구·뉘앙스·복잡한 구조가 포함된 고급 표현",
+};
+const levelKo = (l: string) => LEVEL_KO[l] ?? "초급";
+
 const RESPONSE_SCHEMA = {
   type: "object",
   properties: {
@@ -68,6 +80,7 @@ const norm = (s: string) => s.toLowerCase().trim();
 export async function generateDailyContent(opts: {
   sourceLang: string;
   targetLang: string;
+  level?: string;
   cardCount?: number;
   sentenceCount?: number;
   force?: boolean;
@@ -75,6 +88,7 @@ export async function generateDailyContent(opts: {
   const {
     sourceLang,
     targetLang,
+    level = "beginner",
     cardCount = 4,
     sentenceCount = 3,
     force = false,
@@ -89,6 +103,7 @@ export async function generateDailyContent(opts: {
       .select("id", { count: "exact", head: true })
       .eq("source_lang", sourceLang)
       .eq("target_lang", targetLang)
+      .eq("level", level)
       .eq("for_date", today);
     if ((count ?? 0) > 0) {
       return { pair, skipped: true, cards: 0, sentences: 0 };
@@ -133,11 +148,12 @@ export async function generateDailyContent(opts: {
   const sourceName = nameOf(sourceLang);
   const avoid = [...existingTerms, ...existingSentences].slice(0, 80).join(" | ");
 
-  const prompt = `You create beginner-friendly daily language-learning content.
+  const prompt = `You create daily language-learning content.
 Learner's native language: ${sourceName} (${sourceLang}).
 Target language being learned: ${targetName} (${targetLang}).
+난이도(difficulty): ${levelKo(level)} 수준 — ${LEVEL_DESC[level] ?? LEVEL_DESC.beginner}.
 
-Generate exactly ${cardCount} vocabulary cards and ${sentenceCount} short, practical everyday example sentences for a beginner.
+Generate exactly ${cardCount} vocabulary cards and ${sentenceCount} short, practical everyday example sentences at this difficulty level.
 
 Card fields:
 - "term": a common, useful word or expression written in ${targetName}.
@@ -151,7 +167,7 @@ Sentence fields:
 - "reading": pronunciation guide or null.
 - "text_source": the translation in ${sourceName}.
 
-Keep everything beginner level, natural, and varied across topics.
+Keep everything at the difficulty level above, natural, and varied across topics.
 Do NOT repeat any of these already-used items: ${avoid || "(none yet)"}`;
 
   const result = await geminiGenerateJSON<GenResult>(prompt, RESPONSE_SCHEMA);
@@ -165,14 +181,16 @@ Do NOT repeat any of these already-used items: ${avoid || "(none yet)"}`;
     (s) => s.text_target && !sentSet.has(norm(s.text_target)),
   );
 
-  // Find or create the per-pair "daily" deck.
+  // Find or create the per-pair, per-level "daily" deck.
+  const deckTitle = `${DAILY_DECK_TITLE} (${levelKo(level)})`;
   let deckId: string | null = null;
   const { data: existingDeck } = await admin
     .from("decks")
     .select("id")
-    .eq("title", DAILY_DECK_TITLE)
+    .eq("title", deckTitle)
     .eq("source_lang", sourceLang)
     .eq("target_lang", targetLang)
+    .eq("level", level)
     .maybeSingle();
   if (existingDeck) {
     deckId = existingDeck.id as string;
@@ -180,11 +198,11 @@ Do NOT repeat any of these already-used items: ${avoid || "(none yet)"}`;
     const { data: created } = await admin
       .from("decks")
       .insert({
-        title: DAILY_DECK_TITLE,
+        title: deckTitle,
         description: "매일 AI가 추가하는 새 단어",
         source_lang: sourceLang,
         target_lang: targetLang,
-        level: "daily",
+        level,
         sort_order: 99,
       })
       .select("id")
@@ -223,7 +241,7 @@ Do NOT repeat any of these already-used items: ${avoid || "(none yet)"}`;
     const rows = newSentences.map((s) => ({
       source_lang: sourceLang,
       target_lang: targetLang,
-      level: "daily",
+      level,
       text_target: s.text_target,
       reading: s.reading ?? null,
       text_source: s.text_source,

@@ -7,8 +7,8 @@ export const maxDuration = 60;
 
 // Pairs that always get fresh content, even with no registered users yet.
 const DEFAULT_PAIRS = [
-  { sourceLang: "ko", targetLang: "en" },
-  { sourceLang: "ko", targetLang: "ja" },
+  { sourceLang: "ko", targetLang: "en", level: "beginner" },
+  { sourceLang: "ko", targetLang: "ja", level: "beginner" },
 ];
 
 function isAuthorized(request: Request): boolean {
@@ -20,21 +20,27 @@ function isAuthorized(request: Request): boolean {
   return url.searchParams.get("secret") === secret;
 }
 
-/** Distinct language pairs that users are actually learning, plus defaults. */
+/** Distinct (pair + level) combos that users are learning, plus defaults. */
 async function getActivePairs() {
-  const pairs = new Map<string, { sourceLang: string; targetLang: string }>();
+  const pairs = new Map<
+    string,
+    { sourceLang: string; targetLang: string; level: string }
+  >();
   for (const p of DEFAULT_PAIRS) {
-    pairs.set(`${p.sourceLang}-${p.targetLang}`, p);
+    pairs.set(`${p.sourceLang}-${p.targetLang}-${p.level}`, p);
   }
   try {
     const admin = createAdminClient();
     const { data } = await admin
       .from("profiles")
-      .select("learning_source_lang, learning_target_lang");
+      .select("learning_source_lang, learning_target_lang, learning_level");
     for (const row of data ?? []) {
       const s = row.learning_source_lang as string;
       const t = row.learning_target_lang as string;
-      if (s && t && s !== t) pairs.set(`${s}-${t}`, { sourceLang: s, targetLang: t });
+      const level = (row.learning_level as string) || "beginner";
+      if (s && t && s !== t) {
+        pairs.set(`${s}-${t}-${level}`, { sourceLang: s, targetLang: t, level });
+      }
     }
   } catch {
     // fall back to defaults

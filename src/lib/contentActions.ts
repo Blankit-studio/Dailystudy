@@ -30,23 +30,25 @@ export async function generateMyPairContent(): Promise<GenerateResult> {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("learning_source_lang, learning_target_lang")
+    .select("learning_source_lang, learning_target_lang, learning_level")
     .eq("id", user.id)
     .maybeSingle();
   if (!profile) return { ok: false, error: "프로필을 찾을 수 없습니다." };
 
   const source = profile.learning_source_lang as string;
   const target = profile.learning_target_lang as string;
+  const level = (profile.learning_level as string) ?? "beginner";
   if (source === target) {
     return { ok: false, error: "출발어와 목표어가 같습니다." };
   }
 
-  // Only generate when the pair is genuinely empty (prevents spamming the API).
+  // Only generate when this pair+level is genuinely empty (prevents spam).
   const { data: decks } = await supabase
     .from("decks")
     .select("id")
     .eq("source_lang", source)
-    .eq("target_lang", target);
+    .eq("target_lang", target)
+    .eq("level", level);
   const deckIds = (decks ?? []).map((d) => d.id);
   let cardCount = 0;
   if (deckIds.length) {
@@ -60,7 +62,8 @@ export async function generateMyPairContent(): Promise<GenerateResult> {
     .from("sentences")
     .select("id", { count: "exact", head: true })
     .eq("source_lang", source)
-    .eq("target_lang", target);
+    .eq("target_lang", target)
+    .eq("level", level);
 
   if (cardCount > 0 || (sentenceCount ?? 0) > 0) {
     return { ok: true, already: true };
@@ -70,6 +73,7 @@ export async function generateMyPairContent(): Promise<GenerateResult> {
     const res = await generateDailyContent({
       sourceLang: source,
       targetLang: target,
+      level,
       cardCount: 8,
       sentenceCount: 5,
       force: true,
