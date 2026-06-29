@@ -174,6 +174,36 @@ export async function getDueSummary(profile: Profile): Promise<{
   return { due, newCards, totalLearned };
 }
 
+/** Whether the user's active pair has any cards / sentences yet. */
+export async function pairHasContent(
+  profile: Profile,
+): Promise<{ cards: boolean; sentences: boolean }> {
+  const supabase = await createClient();
+  const { data: decks } = await supabase
+    .from("decks")
+    .select("id")
+    .eq("source_lang", profile.learning_source_lang)
+    .eq("target_lang", profile.learning_target_lang);
+  const deckIds = (decks ?? []).map((d) => d.id);
+
+  let cards = false;
+  if (deckIds.length) {
+    const { count } = await supabase
+      .from("cards")
+      .select("id", { count: "exact", head: true })
+      .in("deck_id", deckIds);
+    cards = (count ?? 0) > 0;
+  }
+
+  const { count: sentenceCount } = await supabase
+    .from("sentences")
+    .select("id", { count: "exact", head: true })
+    .eq("source_lang", profile.learning_source_lang)
+    .eq("target_lang", profile.learning_target_lang);
+
+  return { cards, sentences: (sentenceCount ?? 0) > 0 };
+}
+
 export async function getSentences(profile: Profile): Promise<Sentence[]> {
   const supabase = await createClient();
   const { data } = await supabase

@@ -96,7 +96,8 @@ export default function SettingsForm({
           </p>
         )}
         <p className="mt-3 text-xs text-subtle">
-          현재 콘텐츠가 준비된 조합: 한국어 → 영어, 한국어 → 일본어
+          어떤 언어 쌍이든 선택할 수 있어요. 콘텐츠가 없으면 학습·문장 화면에서
+          AI로 바로 생성하고, 매일 자동으로도 새 콘텐츠가 추가됩니다.
         </p>
       </section>
 

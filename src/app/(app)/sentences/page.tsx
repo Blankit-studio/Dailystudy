@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getLanguages, getProfile, getSentences, languageLabel } from "@/lib/data";
 import SentenceViewer from "@/components/SentenceViewer";
+import GenerateContentButton from "@/components/GenerateContentButton";
 
 export const dynamic = "force-dynamic";
 
@@ -18,18 +19,23 @@ export default async function SentencesPage() {
   if (sentences.length === 0) {
     return (
       <div className="mx-auto max-w-lg rounded-2xl border border-line bg-surface p-10 text-center">
-        <div className="text-5xl">📭</div>
-        <h1 className="mt-4 text-xl font-bold text-fg">문장이 아직 없어요</h1>
+        <div className="text-5xl">🌍</div>
+        <h1 className="mt-4 text-xl font-bold text-fg">
+          {targetLabel} 문장이 아직 없어요
+        </h1>
         <p className="mt-2 text-sm text-muted">
-          선택한 언어({targetLabel})에 등록된 문장이 없어요. 설정에서 다른
-          언어를 선택해보세요.
+          이 언어 조합의 문장을 AI로 바로 만들 수 있어요. 매일 자동으로도 새
+          문장이 추가됩니다.
         </p>
-        <Link
-          href="/settings"
-          className="mt-6 inline-block rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-dark"
-        >
-          설정으로
-        </Link>
+        <div className="mt-6 flex flex-col items-center gap-3">
+          <GenerateContentButton label="AI로 문장 만들기" />
+          <Link
+            href="/settings"
+            className="text-sm text-muted underline-offset-4 hover:text-fg hover:underline"
+          >
+            다른 언어 선택하기
+          </Link>
+        </div>
       </div>
     );
   }

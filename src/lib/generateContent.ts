@@ -23,15 +23,6 @@ export type PairResult = {
   sentences: number;
 };
 
-const LANG_EN: Record<string, string> = {
-  ko: "Korean",
-  en: "English",
-  ja: "Japanese",
-  zh: "Chinese",
-  es: "Spanish",
-  fr: "French",
-};
-
 const DAILY_DECK_TITLE = "매일 새 단어";
 
 const RESPONSE_SCHEMA = {
@@ -131,8 +122,15 @@ export async function generateDailyContent(opts: {
     .limit(150);
   const existingSentences = (es ?? []).map((s) => s.text_target as string);
 
-  const targetName = LANG_EN[targetLang] ?? targetLang;
-  const sourceName = LANG_EN[sourceLang] ?? sourceLang;
+  // Resolve language display names from the DB so any language in the
+  // `languages` table works without code changes.
+  const { data: langRows } = await admin
+    .from("languages")
+    .select("code, name_native");
+  const nameOf = (code: string) =>
+    (langRows ?? []).find((l) => l.code === code)?.name_native ?? code;
+  const targetName = nameOf(targetLang);
+  const sourceName = nameOf(sourceLang);
   const avoid = [...existingTerms, ...existingSentences].slice(0, 80).join(" | ");
 
   const prompt = `You create beginner-friendly daily language-learning content.

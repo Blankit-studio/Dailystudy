@@ -249,8 +249,21 @@ insert into sentences (source_lang, target_lang, text_target, text_source, day_i
 values ('ko', 'en', 'Let me get back to you.', '다시 연락드릴게요.', 13);
 ```
 
-새 언어 쌍을 추가하려면 `languages`에 코드를 넣고, 해당 조합의 `decks`/`cards`/`sentences`를
-채운 뒤 설정 페이지에서 선택하면 됩니다.
+### 새 언어 추가 (다국어 확장)
+플랫폼은 **데이터 기반 다국어**입니다. 새 언어를 지원하려면 `languages` 테이블에
+한 줄만 추가하면 됩니다 — 곧바로 설정에서 선택 가능하고, AI 생성기가 그 이름을
+테이블에서 읽어 콘텐츠를 만듭니다(코드 수정 불필요).
+
+```sql
+insert into languages (code, name_native, name_ko, flag)
+values ('nl', 'Nederlands', '네덜란드어', '🇳🇱');
+```
+
+기본 제공 언어: 한국어·영어·일본어·중국어·스페인어·프랑스어·독일어·이탈리아어·
+포르투갈어·러시아어·베트남어·태국어·인도네시아어 (마이그레이션 `0001`, `0004`).
+
+콘텐츠가 없는 언어 쌍을 고르면, **학습/문장 화면의 "AI로 만들기" 버튼**으로 즉시
+첫 세트를 생성할 수 있고(데일리 cron을 기다릴 필요 없음), 이후 매일 자동으로 추가됩니다.
 
 ---
 
