@@ -28,12 +28,21 @@ export async function generateMyPairContent(): Promise<GenerateResult> {
     return { ok: false, error: "AI 생성이 설정되지 않았어요 (GEMINI_API_KEY 없음)." };
   }
 
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("learning_source_lang, learning_target_lang, learning_level")
     .eq("id", user.id)
     .maybeSingle();
-  if (!profile) return { ok: false, error: "프로필을 찾을 수 없습니다." };
+  if (profileError) {
+    // Most common cause: migration 0005 (learning_level) not applied yet.
+    return { ok: false, error: `프로필 조회 오류: ${profileError.message}` };
+  }
+  if (!profile) {
+    return {
+      ok: false,
+      error: "프로필을 찾을 수 없습니다. 대시보드를 먼저 한 번 열어주세요.",
+    };
+  }
 
   const source = profile.learning_source_lang as string;
   const target = profile.learning_target_lang as string;
