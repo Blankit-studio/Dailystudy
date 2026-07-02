@@ -10,6 +10,8 @@ import {
 
 export const dynamic = "force-dynamic";
 
+export const metadata = { title: "대시보드" };
+
 export default async function DashboardPage() {
   const profile = await getProfile();
   if (!profile) return null;

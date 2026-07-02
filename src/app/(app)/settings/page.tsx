@@ -3,6 +3,8 @@ import SettingsForm from "@/components/SettingsForm";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = { title: "설정" };
+
 export default async function SettingsPage() {
   const profile = await getProfile();
   if (!profile) return null;

@@ -21,6 +21,7 @@
 
 /* Light theme (default) */
 :root {
+  color-scheme: light;
   --bg: #f7f8fa;
   --surface: #ffffff;
   --muted-bg: #f1f5f9;
@@ -33,6 +34,7 @@
 
 /* Dark theme */
 .dark {
+  color-scheme: dark;
   --bg: #000000;
   --surface: #161618;
   --muted-bg: #27272a;
@@ -52,6 +54,18 @@ body {
   color: var(--fg);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Visible keyboard focus everywhere, in the brand color */
+:where(a, button, input, select, textarea, [role="button"]):focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-brand) 25%, transparent);
 }
 
 /* Card flip animation for flashcards */

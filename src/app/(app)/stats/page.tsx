@@ -10,6 +10,8 @@ import type { Report } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = { title: "통계" };
+
 export default async function StatsPage() {
   const profile = await getProfile();
   if (!profile) return null;

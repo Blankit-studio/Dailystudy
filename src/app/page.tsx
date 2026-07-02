@@ -27,6 +27,8 @@ const LANGUAGES = [
   { flag: "🇨🇳", name: "중국어" },
   { flag: "🇪🇸", name: "스페인어" },
   { flag: "🇫🇷", name: "프랑스어" },
+  { flag: "🇩🇪", name: "독일어" },
+  { flag: "🌍", name: "+7개 언어" },
 ];
 
 export default async function Home() {
@@ -85,7 +87,7 @@ export default async function Home() {
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-muted">
               간격 반복 플래시카드와 매일 문장 학습, 그리고 연속 학습 스트릭으로
-              지치지 않고 꾸준히 언어를 익히세요. 영어·일본어·중국어 등 여러
+              지치지 않고 꾸준히 언어를 익히세요. 영어·일본어·중국어 등 13개
               언어를 지원합니다.
             </p>
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">

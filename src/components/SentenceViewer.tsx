@@ -1,17 +1,28 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { logSentenceStudy } from "@/lib/actions";
+import { toBcp47 } from "@/lib/speech";
+import SpeakButton from "@/components/SpeakButton";
 import type { Sentence } from "@/lib/types";
+
+function isInteractive(target: EventTarget | null): boolean {
+  return (
+    target instanceof HTMLElement &&
+    ["BUTTON", "A", "INPUT", "SELECT", "TEXTAREA"].includes(target.tagName)
+  );
+}
 
 export default function SentenceViewer({
   sentences,
   targetLabel,
+  targetLang,
 }: {
   sentences: Sentence[];
   targetLabel: string;
+  targetLang: string;
 }) {
   const router = useRouter();
   const [index, setIndex] = useState(0);
@@ -45,6 +56,26 @@ export default function SentenceViewer({
     }
   }
 
+  // Keyboard shortcuts: ←/→ navigate, Space/Enter reveals the meaning.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (isInteractive(e.target)) return;
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        go(index + 1);
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        go(index - 1);
+      } else if (e.code === "Space" || e.key === "Enter") {
+        e.preventDefault();
+        setRevealed(true);
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index, total]);
+
   return (
     <div className="mx-auto max-w-xl">
       <div className="mb-5 flex items-center gap-3">
@@ -75,9 +106,19 @@ export default function SentenceViewer({
           )}
         </div>
 
-        <p className="mt-6 text-2xl font-bold leading-snug text-fg">
-          {current.text_target}
-        </p>
+        <div className="mt-6 flex items-start justify-between gap-3">
+          <p
+            lang={toBcp47(targetLang)}
+            className="text-2xl font-bold leading-snug text-fg"
+          >
+            {current.text_target}
+          </p>
+          <SpeakButton
+            text={current.text_target}
+            lang={targetLang}
+            className="shrink-0"
+          />
+        </div>
         {current.reading && (
           <p className="mt-2 text-sm text-subtle">{current.reading}</p>
         )}
@@ -127,6 +168,10 @@ export default function SentenceViewer({
           </button>
         )}
       </div>
+
+      <p className="mt-3 hidden text-center text-xs text-subtle sm:block">
+        단축키: ←/→ 이동 · Space 뜻 보기
+      </p>
 
       {logged && (
         <p className="mt-4 text-center text-sm text-brand">

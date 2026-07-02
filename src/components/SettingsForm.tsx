@@ -78,6 +78,7 @@ export default function SettingsForm({
               <button
                 key={`${p.s}-${p.t}`}
                 type="button"
+                aria-pressed={active}
                 onClick={() => {
                   setSource(p.s);
                   setTarget(p.t);
@@ -155,6 +156,7 @@ export default function SettingsForm({
               <button
                 key={l.value}
                 type="button"
+                aria-pressed={active}
                 onClick={() => setLevel(l.value)}
                 className={`rounded-xl border px-3 py-3 text-center transition ${
                   active

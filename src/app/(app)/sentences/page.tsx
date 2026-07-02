@@ -5,6 +5,8 @@ import GenerateContentButton from "@/components/GenerateContentButton";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = { title: "문장" };
+
 export default async function SentencesPage() {
   const profile = await getProfile();
   if (!profile) return null;
@@ -40,5 +42,11 @@ export default async function SentencesPage() {
     );
   }
 
-  return <SentenceViewer sentences={sentences} targetLabel={targetLabel} />;
+  return (
+    <SentenceViewer
+      sentences={sentences}
+      targetLabel={targetLabel}
+      targetLang={profile.learning_target_lang}
+    />
+  );
 }

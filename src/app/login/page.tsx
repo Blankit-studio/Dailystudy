@@ -4,6 +4,8 @@ import LoginForm from "./LoginForm";
 import Logo from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
 
+export const metadata = { title: "로그인" };
+
 export default function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col bg-bg">

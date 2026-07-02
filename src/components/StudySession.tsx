@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { reviewCard } from "@/lib/actions";
+import { toBcp47 } from "@/lib/speech";
+import SpeakButton from "@/components/SpeakButton";
 import type { Rating, StudyCard } from "@/lib/types";
 
 const RATINGS: {
@@ -38,12 +40,21 @@ const RATINGS: {
   },
 ];
 
+function isInteractive(target: EventTarget | null): boolean {
+  return (
+    target instanceof HTMLElement &&
+    ["BUTTON", "A", "INPUT", "SELECT", "TEXTAREA"].includes(target.tagName)
+  );
+}
+
 export default function StudySession({
   cards,
   targetLabel,
+  targetLang,
 }: {
   cards: StudyCard[];
   targetLabel: string;
+  targetLang: string;
 }) {
   const router = useRouter();
   const [queue, setQueue] = useState<StudyCard[]>(cards);
@@ -57,37 +68,58 @@ export default function StudySession({
   const current = queue[index];
   const done = index >= queue.length;
 
-  function handleRate(rating: Rating) {
-    if (!current || isPending) return;
-    const card = current;
+  const handleRate = useCallback(
+    (rating: Rating) => {
+      if (!current || isPending) return;
+      const card = current;
 
-    startTransition(async () => {
-      try {
-        await reviewCard(card.id, rating);
-      } catch {
-        // Keep the UI flowing even if the network write fails.
-      }
-    });
-
-    setReviewed((n) => n + 1);
-
-    if (rating === "again") {
-      // Re-queue the card near the end for another pass this session.
-      setAgain((n) => n + 1);
-      setQueue((q) => {
-        const next = [...q];
-        const [c] = next.splice(index, 1);
-        const insertAt = Math.min(next.length, index + 3);
-        next.splice(insertAt, 0, c);
-        return next;
+      startTransition(async () => {
+        try {
+          await reviewCard(card.id, rating);
+        } catch {
+          // Keep the UI flowing even if the network write fails.
+        }
       });
-      setFlipped(false);
-      return;
-    }
 
-    setIndex((i) => i + 1);
-    setFlipped(false);
-  }
+      setReviewed((n) => n + 1);
+
+      if (rating === "again") {
+        // Re-queue the card near the end for another pass this session.
+        setAgain((n) => n + 1);
+        setQueue((q) => {
+          const next = [...q];
+          const [c] = next.splice(index, 1);
+          const insertAt = Math.min(next.length, index + 3);
+          next.splice(insertAt, 0, c);
+          return next;
+        });
+        setFlipped(false);
+        return;
+      }
+
+      setIndex((i) => i + 1);
+      setFlipped(false);
+    },
+    [current, isPending, index],
+  );
+
+  // Keyboard shortcuts: Space/Enter flips, 1–4 rates the flipped card.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (done || isInteractive(e.target)) return;
+      if (e.code === "Space" || e.key === "Enter") {
+        e.preventDefault();
+        setFlipped((f) => !f);
+        return;
+      }
+      if (flipped && ["1", "2", "3", "4"].includes(e.key)) {
+        e.preventDefault();
+        handleRate(RATINGS[Number(e.key) - 1].value);
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [done, flipped, handleRate]);
 
   if (done) {
     return (
@@ -127,6 +159,8 @@ export default function StudySession({
   }
 
   const progress = Math.round((reviewed / (total + again)) * 100) || 0;
+  const speakText =
+    flipped && current.example ? current.example : current.term;
 
   return (
     <div className="mx-auto max-w-xl">
@@ -150,7 +184,7 @@ export default function StudySession({
       </div>
 
       {/* flashcard */}
-      <div className="flip-card">
+      <div className="flip-card relative">
         <button
           type="button"
           onClick={() => setFlipped((f) => !f)}
@@ -163,7 +197,10 @@ export default function StudySession({
               <span className="absolute left-5 top-5 rounded-full bg-muted-bg px-2.5 py-1 text-xs font-medium text-muted">
                 {targetLabel}
               </span>
-              <p className="text-center text-4xl font-bold text-fg">
+              <p
+                lang={toBcp47(targetLang)}
+                className="text-center text-4xl font-bold text-fg"
+              >
                 {current.term}
               </p>
               {current.reading && (
@@ -183,7 +220,10 @@ export default function StudySession({
               </p>
               {current.example && (
                 <div className="mt-5 max-w-sm text-center">
-                  <p className="text-sm font-medium text-fg">
+                  <p
+                    lang={toBcp47(targetLang)}
+                    className="text-sm font-medium text-fg"
+                  >
                     {current.example}
                   </p>
                   {current.example_meaning && (
@@ -196,6 +236,13 @@ export default function StudySession({
             </div>
           </div>
         </button>
+
+        {/* pronunciation (overlaid so it doesn't flip the card) */}
+        <SpeakButton
+          text={speakText}
+          lang={targetLang}
+          className="absolute right-4 top-4 z-10"
+        />
       </div>
 
       {/* controls */}
@@ -224,6 +271,9 @@ export default function StudySession({
             ))}
           </div>
         )}
+        <p className="mt-3 hidden text-center text-xs text-subtle sm:block">
+          단축키: Space 카드 뒤집기 · 1~4 평가
+        </p>
       </div>
     </div>
   );

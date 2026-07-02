@@ -159,6 +159,7 @@ export default function LoginForm() {
             </label>
             <input
               type="text"
+              autoComplete="name"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="홍길동"
@@ -173,6 +174,7 @@ export default function LoginForm() {
           </label>
           <input
             type="email"
+            autoComplete="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -188,6 +190,9 @@ export default function LoginForm() {
             </label>
             <input
               type="password"
+              autoComplete={
+                mode === "signup" ? "new-password" : "current-password"
+              }
               required
               minLength={6}
               value={password}

@@ -11,6 +11,8 @@ import GenerateContentButton from "@/components/GenerateContentButton";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = { title: "학습" };
+
 export default async function StudyPage() {
   const profile = await getProfile();
   if (!profile) return null;
@@ -78,5 +80,11 @@ export default async function StudyPage() {
     );
   }
 
-  return <StudySession cards={queue} targetLabel={targetLabel} />;
+  return (
+    <StudySession
+      cards={queue}
+      targetLabel={targetLabel}
+      targetLang={profile.learning_target_lang}
+    />
+  );
 }
