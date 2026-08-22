@@ -19,10 +19,12 @@ npm test        # vitest — 순수 로직 테스트 (CI 에서도 실행)
 
 ```
 src/app/            라우트 (랜딩 · /login · /auth/* · (app)/* 보호 영역 · /api/*)
+                    보호 영역: dashboard · study · sentences · review · stats · settings
 src/components/     UI 컴포넌트
 src/lib/            도메인 로직
   ├ srs.ts            SM-2 기반 간격 반복 스케줄러 (순수 함수)
   ├ stats.ts          스트릭·히트맵 계산 (순수 함수)
+  ├ difficulty.ts     오답 노트 난이도 판정 (순수 함수, ease 기반)
   ├ data.ts           서버 조회 (RLS 적용된 사용자 클라이언트)
   ├ actions.ts        서버 액션 (복습 기록, 설정 저장)
   ├ contentActions.ts 사용자 트리거 콘텐츠 생성
@@ -49,7 +51,7 @@ supabase/migrations/ 스키마 (번호 순서대로 실행)
 - **레벨 필터를 빠뜨리지 않는다.** 카드/문장 조회는 항상
   `source_lang` + `target_lang` + `level` 세 조건으로 건다.
 - **순수 로직은 테스트를 남긴다.** `src/lib/__tests__/` 에 `srs`(스케줄러) ·
-  `stats`(스트릭) · `cronAuth`(인증) 테스트가 있다. 이 셋을 고칠 때는
+  `stats`(스트릭) · `cronAuth`(인증) · `difficulty`(오답 노트) 테스트가 있다. 이 셋을 고칠 때는
   테스트를 함께 갱신한다. DB/네트워크가 필요한 코드는 대상이 아니다.
 - 커밋 전 `npm run lint && npm test && npm run build` 를 통과시킨다.
   (`.github/workflows/ci.yml` 이 푸시마다 같은 순서로 검증한다.)

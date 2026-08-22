@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {
+  getDifficultCards,
   getDueSummary,
   getLanguages,
   getProfile,
@@ -16,11 +17,12 @@ export default async function DashboardPage() {
   const profile = await getProfile();
   if (!profile) return null;
 
-  const [languages, due, stats, sentences] = await Promise.all([
+  const [languages, due, stats, sentences, difficult] = await Promise.all([
     getLanguages(),
     getDueSummary(profile),
     getStudyStats(profile.id),
     getSentences(profile),
+    getDifficultCards(profile),
   ]);
 
   const pairLabel = `${languageLabel(languages, profile.learning_source_lang)} → ${languageLabel(
@@ -51,7 +53,7 @@ export default async function DashboardPage() {
       {/* Stat tiles */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatTile icon="🔥" label="연속 학습" value={`${stats.currentStreak}일`} accent="text-brand" />
-        <StatTile icon="📌" label="오늘 복습" value={`${reviewCount}개`} accent="text-brand" />
+        <StatTile icon="🎯" label="오늘 복습" value={`${reviewCount}개`} accent="text-brand" />
         <StatTile icon="🧠" label="학습한 카드" value={`${due.totalLearned}개`} accent="text-fg" />
         <StatTile icon="🗓️" label="총 학습일" value={`${stats.totalDays}일`} accent="text-muted" />
       </div>
@@ -98,6 +100,26 @@ export default async function DashboardPage() {
           </span>
         </Link>
       </div>
+
+      {difficult.length > 0 && (
+        <Link
+          href="/review"
+          className="group flex items-center justify-between gap-4 rounded-2xl border border-line bg-surface p-5 transition hover:border-brand/40"
+        >
+          <div className="flex items-center gap-4">
+            <span className="text-3xl">📌</span>
+            <div>
+              <h2 className="font-bold text-fg">오답 노트</h2>
+              <p className="mt-0.5 text-sm text-muted">
+                자주 틀린 카드 {difficult.length}개를 모아뒀어요. 집중 복습해보세요.
+              </p>
+            </div>
+          </div>
+          <span className="shrink-0 text-sm font-semibold text-brand underline-offset-4 group-hover:underline">
+            보기 →
+          </span>
+        </Link>
+      )}
 
       {reviewCount === 0 && due.totalLearned === 0 && (
         <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-5 text-sm text-amber-700 dark:text-amber-300">

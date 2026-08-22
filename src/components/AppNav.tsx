@@ -9,6 +9,7 @@ const LINKS = [
   { href: "/dashboard", label: "대시보드", icon: "🏠" },
   { href: "/study", label: "학습", icon: "🃏" },
   { href: "/sentences", label: "문장", icon: "💬" },
+  { href: "/review", label: "오답", icon: "📌" },
   { href: "/stats", label: "통계", icon: "📊" },
   { href: "/settings", label: "설정", icon: "⚙️" },
 ];

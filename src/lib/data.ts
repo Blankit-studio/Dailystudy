@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { toDateString } from "./srs";
 import { computeCurrentStreak, computeLongestStreak } from "./stats";
+import { DEFAULT_EASE, sortByDifficulty } from "./difficulty";
 import type {
   Language,
   Profile,
@@ -206,6 +207,72 @@ export async function pairHasContent(
     .eq("level", profile.learning_level);
 
   return { cards, sentences: (sentenceCount ?? 0) > 0 };
+}
+
+/**
+ * Cards the user keeps getting wrong: those whose ease has dropped below
+ * the starting value, hardest first. Scoped to the active language pair
+ * and level like every other content query.
+ */
+export async function getDifficultCards(
+  profile: Profile,
+  limit = 50,
+): Promise<StudyCard[]> {
+  const supabase = await createClient();
+
+  const { data: decks } = await supabase
+    .from("decks")
+    .select("id")
+    .eq("source_lang", profile.learning_source_lang)
+    .eq("target_lang", profile.learning_target_lang)
+    .eq("level", profile.learning_level);
+
+  const deckIds = (decks ?? []).map((d) => d.id);
+  if (deckIds.length === 0) return [];
+
+  const { data: cards } = await supabase
+    .from("cards")
+    .select("*")
+    .in("deck_id", deckIds);
+
+  if (!cards || cards.length === 0) return [];
+
+  const { data: progress } = await supabase
+    .from("user_cards")
+    .select("*")
+    .eq("user_id", profile.id)
+    .lt("ease", DEFAULT_EASE)
+    .in(
+      "card_id",
+      cards.map((c) => c.id),
+    );
+
+  if (!progress || progress.length === 0) return [];
+
+  const cardById = new Map(cards.map((c) => [c.id as string, c]));
+  const scored = progress
+    .map((p) => {
+      const card = cardById.get(p.card_id as string);
+      if (!card) return null;
+      return {
+        ease: p.ease as number,
+        card: {
+          ...card,
+          progress: {
+            ease: p.ease,
+            interval_days: p.interval_days,
+            repetitions: p.repetitions,
+            due_date: p.due_date,
+            status: p.status,
+          },
+        } as StudyCard,
+      };
+    })
+    .filter((entry): entry is { ease: number; card: StudyCard } => entry !== null);
+
+  return sortByDifficulty(scored)
+    .slice(0, limit)
+    .map((entry) => entry.card);
 }
 
 export async function getSentences(profile: Profile): Promise<Sentence[]> {
