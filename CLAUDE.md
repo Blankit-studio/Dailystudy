@@ -57,7 +57,7 @@ supabase/migrations/ 스키마 (번호 순서대로 실행)
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ | |
 | `SUPABASE_SERVICE_ROLE_KEY` | AI 기능 | **서버 전용**, 브라우저 노출 금지 |
 | `GEMINI_API_KEY` | AI 기능 | https://aistudio.google.com/apikey (무료) |
-| `CRON_SECRET` | cron 보호 | 임의의 긴 문자열. Vercel Cron이 Bearer로 전송 |
+| `CRON_SECRET` | **프로덕션 필수** | 임의의 긴 문자열. Vercel Cron이 Bearer로 전송. 미설정 시 프로덕션에서는 cron·admin 라우트가 **401로 차단**된다(fail-closed, `lib/cronAuth.ts`) |
 | `GEMINI_MODEL` | 선택 | 기본 `gemini-2.5-flash` |
 
 ## 마이그레이션 (번호 순서대로 실행)
@@ -94,3 +94,16 @@ Supabase Auth의 Redirect URL에 배포 도메인의 `/auth/callback`, `/auth/co
   (`https://<ref>.supabase.co/auth/v1/callback`)로 등록한다 — 앱 주소가 아니다.
 - `gemini-2.0-flash`는 2026-06-01 종료. 기본값은 `gemini-2.5-flash`.
 - Vercel Hobby 플랜은 cron 개수 제한이 있을 수 있다.
+- cron·admin 인증은 `lib/cronAuth.ts`, 생성 대상 조합은 `lib/activePairs.ts`에
+  **한 곳에만** 둔다. 예전에 라우트마다 복사돼 있다가 `/api/admin/reset`이
+  레벨을 빠뜨려 초급 콘텐츠만 재생성하는 버그가 있었다.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

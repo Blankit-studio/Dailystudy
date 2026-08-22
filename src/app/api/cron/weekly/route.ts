@@ -1,16 +1,11 @@
 import { NextResponse } from "next/server";
+import { isCronAuthorized } from "@/lib/cronAuth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { generateWeeklyReport } from "@/lib/reports";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-function isAuthorized(request: Request): boolean {
-  const secret = process.env.CRON_SECRET;
-  if (!secret) return true;
-  if (request.headers.get("authorization") === `Bearer ${secret}`) return true;
-  return new URL(request.url).searchParams.get("secret") === secret;
-}
 
 /**
  * Weekly report generator. Vercel Cron calls this once a week; it builds
@@ -18,7 +13,7 @@ function isAuthorized(request: Request): boolean {
  * even if this week's report already exists (handy for manual testing).
  */
 export async function GET(request: Request) {
-  if (!isAuthorized(request)) {
+  if (!isCronAuthorized(request)) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 

@@ -1,43 +1,12 @@
 import { NextResponse } from "next/server";
+import { getActivePairs } from "@/lib/activePairs";
+import { isCronAuthorized } from "@/lib/cronAuth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { generateDailyContent, type PairResult } from "@/lib/generateContent";
 import { generateResetReport } from "@/lib/reports";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
-
-const DEFAULT_PAIRS = [
-  { sourceLang: "ko", targetLang: "en" },
-  { sourceLang: "ko", targetLang: "ja" },
-];
-
-function isAuthorized(request: Request): boolean {
-  const secret = process.env.CRON_SECRET;
-  if (!secret) return true;
-  if (request.headers.get("authorization") === `Bearer ${secret}`) return true;
-  return new URL(request.url).searchParams.get("secret") === secret;
-}
-
-async function getActivePairs() {
-  const pairs = new Map<string, { sourceLang: string; targetLang: string }>();
-  for (const p of DEFAULT_PAIRS) {
-    pairs.set(`${p.sourceLang}-${p.targetLang}`, p);
-  }
-  try {
-    const admin = createAdminClient();
-    const { data } = await admin
-      .from("profiles")
-      .select("learning_source_lang, learning_target_lang");
-    for (const row of data ?? []) {
-      const s = row.learning_source_lang as string;
-      const t = row.learning_target_lang as string;
-      if (s && t && s !== t) pairs.set(`${s}-${t}`, { sourceLang: s, targetLang: t });
-    }
-  } catch {
-    // fall back to defaults
-  }
-  return [...pairs.values()];
-}
 
 /**
  * One-time reset: wipes all learning content (cards/decks → user SRS
@@ -49,7 +18,7 @@ async function getActivePairs() {
  * Optional: &cards=12 &sentences=8 &logs=1 (also clear streak/stats).
  */
 export async function GET(request: Request) {
-  if (!isAuthorized(request)) {
+  if (!isCronAuthorized(request)) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
