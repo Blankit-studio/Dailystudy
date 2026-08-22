@@ -18,6 +18,8 @@ const RATINGS: {
     value: "again",
     label: "다시",
     hint: "몰랐어요",
+    // Deliberate non-token color: the other three ratings form a blue
+    // scale, so "again" needs a neutral that reads the same in both themes.
     className: "bg-zinc-500 hover:bg-zinc-600",
   },
   {

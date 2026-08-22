@@ -135,6 +135,8 @@ export default function LoginForm() {
         </div>
       )}
 
+      {/* Google's branding guidelines require the light button treatment,
+          so this one keeps fixed colors instead of the theme tokens. */}
       <button
         type="button"
         onClick={handleGoogle}
