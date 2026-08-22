@@ -9,6 +9,7 @@
 npm run dev     # 개발 서버 (http://localhost:3000)
 npm run build   # 프로덕션 빌드 — 커밋 전 반드시 통과시킬 것
 npm run lint    # ESLint (flat config)
+npm test        # vitest — 순수 로직 테스트 (CI 에서도 실행)
 ```
 
 컨테이너가 새로 뜨면 `node_modules`가 없다 → `npm ci` 로 복원한다.
@@ -47,7 +48,11 @@ supabase/migrations/ 스키마 (번호 순서대로 실행)
   (`speech.ts`의 BCP-47 맵에만 발음용 코드를 추가하면 TTS도 동작한다.)
 - **레벨 필터를 빠뜨리지 않는다.** 카드/문장 조회는 항상
   `source_lang` + `target_lang` + `level` 세 조건으로 건다.
-- 커밋 전 `npm run build && npm run lint` 를 통과시킨다.
+- **순수 로직은 테스트를 남긴다.** `src/lib/__tests__/` 에 `srs`(스케줄러) ·
+  `stats`(스트릭) · `cronAuth`(인증) 테스트가 있다. 이 셋을 고칠 때는
+  테스트를 함께 갱신한다. DB/네트워크가 필요한 코드는 대상이 아니다.
+- 커밋 전 `npm run lint && npm test && npm run build` 를 통과시킨다.
+  (`.github/workflows/ci.yml` 이 푸시마다 같은 순서로 검증한다.)
 
 ## 환경 변수
 
