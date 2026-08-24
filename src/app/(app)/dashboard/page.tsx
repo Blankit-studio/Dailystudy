@@ -8,6 +8,7 @@ import {
   getStudyStats,
   languageLabel,
 } from "@/lib/data";
+import StreakReminder from "@/components/StreakReminder";
 
 export const dynamic = "force-dynamic";
 
@@ -49,6 +50,13 @@ export default async function DashboardPage() {
           <span className="text-subtle">변경</span>
         </Link>
       </div>
+
+      <StreakReminder
+        status={stats.streakStatus}
+        streak={stats.currentStreak}
+        hoursLeft={stats.hoursLeftToday}
+        hasContent={due.totalLearned > 0 || reviewCount > 0}
+      />
 
       {/* Stat tiles */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

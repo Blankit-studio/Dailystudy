@@ -1,6 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { toDateString } from "./srs";
-import { computeCurrentStreak, computeLongestStreak } from "./stats";
+import {
+  computeLongestStreak,
+  getStreakStatus,
+  type StreakStatus,
+} from "./stats";
 import { DEFAULT_EASE, sortByDifficulty } from "./difficulty";
 import type {
   Language,
@@ -319,6 +323,8 @@ export async function getStudyLogs(
 export type StudyStats = {
   currentStreak: number;
   longestStreak: number;
+  streakStatus: StreakStatus;
+  hoursLeftToday: number;
   totalDays: number;
   totalCardsReviewed: number;
   totalSentences: number;
@@ -341,9 +347,13 @@ export async function getStudyStats(userId: string): Promise<StudyStats> {
     totalSentences += log.sentences_studied;
   }
 
+  const streak = getStreakStatus(dates);
+
   return {
-    currentStreak: computeCurrentStreak(dates),
+    currentStreak: streak.streak,
     longestStreak: computeLongestStreak(dates),
+    streakStatus: streak.status,
+    hoursLeftToday: streak.hoursLeft,
     totalDays: dates.length,
     totalCardsReviewed,
     totalSentences,

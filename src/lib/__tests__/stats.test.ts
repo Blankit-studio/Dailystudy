@@ -3,6 +3,7 @@ import {
   buildHeatmapWeeks,
   computeCurrentStreak,
   computeLongestStreak,
+  getStreakStatus,
 } from "../stats";
 import { toDateString } from "../srs";
 
@@ -82,5 +83,39 @@ describe("buildHeatmapWeeks", () => {
   it("오늘을 포함한 범위를 만든다", () => {
     const days = buildHeatmapWeeks(new Map(), 13, TODAY).flat();
     expect(days.some((d) => d.date === toDateString(TODAY))).toBe(true);
+  });
+});
+
+describe("getStreakStatus", () => {
+  it("오늘 학습했으면 done 이다", () => {
+    const result = getStreakStatus([daysAgo(0), daysAgo(1)], TODAY);
+    expect(result.status).toBe("done");
+    expect(result.streak).toBe(2);
+  });
+
+  it("어제까지 이어졌는데 오늘 안 했으면 at-risk 다", () => {
+    const result = getStreakStatus([daysAgo(1), daysAgo(2), daysAgo(3)], TODAY);
+    expect(result.status).toBe("at-risk");
+    expect(result.streak).toBe(3);
+  });
+
+  it("연속이 이미 끊겼으면 broken 이다", () => {
+    const result = getStreakStatus([daysAgo(3), daysAgo(4)], TODAY);
+    expect(result.status).toBe("broken");
+    expect(result.streak).toBe(0);
+  });
+
+  it("기록이 없으면 none 이다", () => {
+    expect(getStreakStatus([], TODAY).status).toBe("none");
+  });
+
+  it("자정까지 남은 시간을 함께 알려준다", () => {
+    // TODAY 는 오전 10시 → 23 - 10 = 13시간 남음
+    expect(getStreakStatus([daysAgo(1)], TODAY).hoursLeft).toBe(13);
+  });
+
+  it("남은 시간은 음수가 되지 않는다", () => {
+    const lateNight = new Date("2026-08-22T23:30:00");
+    expect(getStreakStatus([daysAgo(1)], lateNight).hoursLeft).toBe(0);
   });
 });

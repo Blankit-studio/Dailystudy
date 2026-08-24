@@ -23,7 +23,7 @@ src/app/            라우트 (랜딩 · /login · /auth/* · (app)/* 보호 영
 src/components/     UI 컴포넌트
 src/lib/            도메인 로직
   ├ srs.ts            SM-2 기반 간격 반복 스케줄러 (순수 함수)
-  ├ stats.ts          스트릭·히트맵 계산 (순수 함수)
+  ├ stats.ts          스트릭·히트맵·리마인더 상태 계산 (순수 함수)
   ├ difficulty.ts     오답 노트 난이도 판정 (순수 함수, ease 기반)
   ├ data.ts           서버 조회 (RLS 적용된 사용자 클라이언트)
   ├ actions.ts        서버 액션 (복습 기록, 설정 저장)

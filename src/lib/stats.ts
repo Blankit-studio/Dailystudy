@@ -46,6 +46,31 @@ export function computeLongestStreak(studiedDates: Iterable<string>): number {
   return longest;
 }
 
+/**
+ * Where the user stands on today's streak — drives the in-app reminder.
+ *
+ *  done     오늘 학습을 마쳤다
+ *  at-risk  연속 기록이 살아 있지만 오늘 아직 안 했다 (자정에 끊긴다)
+ *  broken   기록은 있으나 연속이 이미 끊겼다
+ *  none     학습 기록이 아직 없다
+ */
+export type StreakStatus = "done" | "at-risk" | "broken" | "none";
+
+export function getStreakStatus(
+  studiedDates: Iterable<string>,
+  today: Date = new Date(),
+): { status: StreakStatus; streak: number; hoursLeft: number } {
+  const set = new Set(studiedDates);
+  const streak = computeCurrentStreak(set, today);
+  // Whole hours remaining before midnight ends the day.
+  const hoursLeft = Math.max(0, 23 - today.getHours());
+
+  if (set.size === 0) return { status: "none", streak: 0, hoursLeft };
+  if (set.has(toDateString(today))) return { status: "done", streak, hoursLeft };
+  if (streak > 0) return { status: "at-risk", streak, hoursLeft };
+  return { status: "broken", streak: 0, hoursLeft };
+}
+
 /** Builds the last `weeks` weeks of dates (Sun→Sat columns) for a heatmap. */
 export function buildHeatmapWeeks(
   counts: Map<string, number>,
